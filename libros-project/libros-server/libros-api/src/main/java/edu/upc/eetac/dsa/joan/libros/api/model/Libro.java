@@ -1,6 +1,6 @@
 package edu.upc.eetac.dsa.joan.libros.api.model;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class Libro {
 
