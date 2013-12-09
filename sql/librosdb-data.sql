@@ -1,0 +1,34 @@
+source librosdb-schema.sql;
+insert into users values('test', 'Test','test@acme.com');
+insert into users values('alicia', 'Alicia', 'alicia@acme.com');
+insert into users values('blas', 'Blas', 'blas@acme.com');
+
+insert into libros values('titol1', 'autor1', 'catala','edicio1', 2003-04-09, 2003-04-09, 'editorial1');
+insert into libros values('titol2', 'autor2', 'catala','edicio2', 2003-04-09, 2003-04-09, 'editorial2');
+insert into libros values('titol3', 'autor3', 'catala','edicio3', 2003-04-09, 2003-04-09, 'editorial3');
+insert into libros values('titol4', 'autor4', 'catala','edicio4', 2003-04-09, 2003-04-09, 'editorial4');
+insert into libros values('titol5', 'autor1', 'catala','edicio1', 2003-04-09, 2003-04-09, 'editorial5');
+insert into liibros values('titol6', 'autor2', 'catala','edicio2', 2003-04-09, 2003-04-09, 'editorial6');
+insert into libros values('titol7', 'autor3', 'catala','edicio3', 2003-04-09, 2003-04-09, 'editorial7');
+insert into libros values('titol8', 'autor4', 'catala','edicio4', 2003-04-09, 2003-04-09, 'editorial8');
+insert into libros values('titol9', 'autor1', 'catala','edicio1', 2003-04-09, 2003-04-09, 'editorial9');
+insert into libros values('titol10', 'autor2', 'catala','edicio2', 2003-04-09, 2003-04-09, 'editorial10');
+insert into libros values('titol11', 'autor3', 'catala','edicio3', 2003-04-09, 2003-04-09, 'editorial11');
+insert into libros values('titol12', 'autor4', 'catala','edicio4', 2003-04-09, 2003-04-09, 'editorial12');
+	
+insert into resenas values('alicia', 'Alicia', 2003-04-09, 'libro muy recomendable merece una buena nota', 'titol11');
+insert into resenas values('alicia', 'Alicia', 2003-04-09, 'libro muy recomendable merece una buena nota', 'titol9');
+insert into resenas values('blas', 'Blas', 2003-04-09, 'libro muy recomendable merece una buena nota', 'titol8');
+insert into resenas values('blas', 'Blas', 2003-04-09 'libro muy recomendable merece una buena nota', 'titol5');
+insert into resenas values('alicia', 'Alicia', 2003-04-09, 'libro muy recomendable merece una buena nota', 'titol2');
+insert into resenas values('alicia', 'Alicia', 2003-04-09, 'libro muy recomendable merece una buena nota', 'titol1');
+insert into resenas values('blas', 'Blas', 2003-04-09, 'libro muy recomendable merece una buena nota', 'titol7');
+insert into resenas values('blas', 'Blas', 2003-04-09, 'libro muy recomendable merece una buena nota', 'titol10');
+insert into resenas values('alicia', 'Alicia', 2003-04-09, 'libro muy recomendable merece una buena nota', 'titol3');
+insert into resenas values('alicia', 'Alicia', 2003-04-09, 'libro muy recomendable merece una buena nota', 'titol4');
+insert into resenas values('blas', 'Blas', 2003-04-09, 'libro muy recomendable merece una buena nota', 'titol6');
+insert into resenas values('blas', 'Blas', 2003-04-09, 'libro muy recomendable merece una buena nota', 'titol10');
+insert into resenas values('alicia', 'Alicia', 2003-04-09, 'libro muy recomendable merece una buena nota', 'titol12');
+insert into resenas values('alicia', 'Alicia', 2003-04-09, 'libro muy recomendable merece una buena nota', 'titol7');
+insert into resenas values('blas', 'Blas', 2003-04-09, 'libro muy recomendable merece una buena nota', 'titol8');
+insert into resenas values('blas', 'Blas', 2003-04-09, 'libro muy recomendable merece una buena nota', 'titol4');
