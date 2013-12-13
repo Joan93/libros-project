@@ -19,7 +19,6 @@ import javax.ws.rs.core.UriInfo;
 import edu.upc.eetac.dsa.joan.libros.api.model.Libro;
 import edu.upc.eetac.dsa.joan.libros.api.model.LibroCollection;
 
-
 @Path("/libros")
 public class LibroResource {
 
