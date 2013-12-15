@@ -79,10 +79,10 @@ public class LibroResource {
 	
 	
 	@GET
-	@Path("/{titulo}")
+	@Path("/search/titulo/{titulo}")
+	
 	@Produces(MediaType.LIBROS_API_LIBRO_COLLECTION)
 	public LibroCollection getLibrostitulo(@PathParam("titulo")  String titulo) {
-	//public LibroCollection getLibrostitulo() {
 		LibroCollection libros = new LibroCollection();
 
 		Connection conn = null;
@@ -130,7 +130,7 @@ public class LibroResource {
 	@Path("/search/autor/{autor}")
 	@Produces(MediaType.LIBROS_API_LIBRO_COLLECTION)
 	public LibroCollection getLibrosautor(@PathParam("autor")  String autor) {
-//	public LibroCollection LibroCollection() {
+	//public LibroCollection LibroCollection() {
 		LibroCollection libros = new LibroCollection();
 
 		Connection conn = null;
@@ -143,7 +143,7 @@ public class LibroResource {
 		}
 		try {
 			stmt = conn.createStatement();
-	//		String autor = "autor3";
+		//	String autor = "autor3";
 			sql = "SELECT * FROM libros WHERE autor LIKE '%" + autor + "%'";
 
 			ResultSet rs = stmt.executeQuery(sql);
@@ -174,8 +174,11 @@ public class LibroResource {
 	}
 	
 	
+	
+	
+	
 	@GET
-	@Path("/search/titulo/{titulo}")
+	@Path("/{titulo}")
 	@Produces(MediaType.LIBROS_API_LIBRO)
 	public Libro getLibro(@PathParam("titulo")  String titulo) {
 		Libro libro = new Libro();
