@@ -1,4 +1,5 @@
 package edu.upc.eetac.dsa.joan.libros.api;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -86,22 +87,17 @@ public class UserResource {
 	public User getUser(@PathParam("username") String username) {
 		User user = new User();
 
-		// TODO: Retrieve all stings stored in the database, instantiate one
-		// Sting for each one and store them in the StingCollection.
 		Connection conn = null;
 		Statement stmt = null;
 		String sql;
-
 		try {
 			conn = ds.getConnection();
 		} catch (SQLException e) {
 			throw new ServiceUnavailableException(e.getMessage());
 		}
-
 		try {
 			stmt = conn.createStatement();
 			sql = "SELECT * FROM users WHERE username= '" + username + "'";
-
 			ResultSet rs = stmt.executeQuery(sql);
 			if (rs.next()) {
 				user.setUsername(rs.getString("username"));
@@ -113,7 +109,6 @@ public class UserResource {
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
 		}
-
 		finally {
 			try {
 				stmt.close();
@@ -122,9 +117,7 @@ public class UserResource {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
 		}
-
 		return user;
 	}
 
@@ -139,19 +132,16 @@ public class UserResource {
 		} catch (SQLException e) {
 			throw new ServiceUnavailableException(e.getMessage());
 		}
-
 		try {
 			stmt = conn.createStatement();
-			String sql = "DELETE FROM stings WHERE username='" + username + "'";
+			String sql = "DELETE FROM users WHERE username='" + username + "'";
 			stmt.executeUpdate(sql);
 			sql = "DELETE FROM users WHERE username='" + username + "'";
 			stmt.executeUpdate(sql);
 
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
-		}
-
-		finally {
+		} finally {
 			try {
 				stmt.close();
 				conn.close();
@@ -159,12 +149,9 @@ public class UserResource {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
 		}
-
 	}
-	
-	
+
 	@PUT
 	@Path("/{username}")
 	@Consumes(MediaType.LIBROS_API_USER)
@@ -199,9 +186,7 @@ public class UserResource {
 			else if (user.getName() == null && user.getEmail() != null) {
 				update = "UPDATE users SET users.email='" + user.getEmail()
 						+ "' WHERE username='" + username + "'";
-			}
-			else
-			{
+			} else {
 				throw new BadRequestException(
 						"name and email are mandatory parameters");
 			}
@@ -278,8 +263,7 @@ public class UserResource {
 				throw new UserNotFoundException();
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
-		}
-		finally {
+		} finally {
 			try {
 				stmt.close();
 				conn.close();

@@ -1,4 +1,5 @@
 package edu.upc.eetac.dsa.joan.libros.api;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,6 +10,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -18,6 +20,7 @@ import javax.ws.rs.core.UriInfo;
 
 import edu.upc.eetac.dsa.joan.libros.api.model.Libro;
 import edu.upc.eetac.dsa.joan.libros.api.model.LibroCollection;
+
 
 @Path("/libros")
 public class LibroResource {
@@ -194,6 +197,70 @@ public class LibroResource {
 				e.printStackTrace();
 			}
 		}
+		return libro;
+	}
+	
+	
+	@PUT
+	@Path("/{titulo}")
+	@Consumes(MediaType.LIBROS_API_LIBRO)
+	@Produces(MediaType.LIBROS_API_LIBRO)
+	public Libro updateLibro(@PathParam("titulo") String titulo, Libro libro) {
+
+			Connection conn = null;
+			Statement stmt = null;
+			try {
+				conn = ds.getConnection();
+			} catch (SQLException e) {
+				throw new ServiceUnavailableException(e.getMessage());
+			}
+			try {
+				stmt = conn.createStatement();
+				String update = null; // TODO: create update query
+			
+				
+				
+				update = "UPDATE libros SET libros.autor='" + libro.getAutor()
+					//	+ "', libros.autor= '" + libro.getAutor()
+						+ "', libros.lengua= '" + libro.getLengua()
+						+ "', libros.edicion= '" + libro.getEdicion()
+						+ "', libros.fecha_ed= '" + libro.getFecha_ed()
+						+ "', libros.fecha_imp= '" + libro.getFecha_imp()
+						+ "', libros.editorial= '" + libro.getEditorial()		
+						+ "' WHERE titulo='" + titulo + "'";
+				
+				
+			/*	
+				update = "UPDATE libros SET libros.autor='" + libro.getAutor()
+						+ "' , libros.lengua= '" + libro.getLengua()
+						+ "' WHERE titulo='" + titulo + "'";
+				
+			
+				*/ 
+				
+				
+				int rows = stmt.executeUpdate(update,
+						Statement.RETURN_GENERATED_KEYS);
+				if (rows != 0) {
+
+					String sql = "SELECT * FROM libros WHERE titulo='"
+							+ titulo + "'";
+					ResultSet rs = stmt.executeQuery(sql);
+					rs.next();	
+				} else
+					throw new LibroNotFoundException();
+			} catch (SQLException e) {
+				throw new InternalServerException(e.getMessage());
+			}
+			finally {
+				try {
+					stmt.close();
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		return libro;
 	}
 }

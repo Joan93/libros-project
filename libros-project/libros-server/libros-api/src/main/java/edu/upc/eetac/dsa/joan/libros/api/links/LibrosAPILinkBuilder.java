@@ -16,7 +16,7 @@ public class LibrosAPILinkBuilder {
 								// enlace
 		link.setUri(uriRoot.toString());
 		link.setRel("self bookmark"); // decirle al cliente la pagina inicial
-		link.setTitle("Beeter API"); // descripción
+		link.setTitle("Libros API"); // descripción
 		link.setType(MediaType.LIBROS_API_LINK_COLLECTION); /*
 															 * devolver una
 															 * colección de
