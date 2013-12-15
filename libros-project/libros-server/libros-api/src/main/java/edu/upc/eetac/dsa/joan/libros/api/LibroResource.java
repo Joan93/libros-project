@@ -77,10 +77,107 @@ public class LibroResource {
 		return libros;
 	}
 	
+	
 	@GET
 	@Path("/{titulo}")
+	@Produces(MediaType.LIBROS_API_LIBRO_COLLECTION)
+	public LibroCollection getLibrostitulo(@PathParam("titulo")  String titulo) {
+	//public LibroCollection getLibrostitulo() {
+		LibroCollection libros = new LibroCollection();
+
+		Connection conn = null;
+		Statement stmt = null;
+		String sql;
+		try {
+			conn = ds.getConnection();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+		try {
+			stmt = conn.createStatement();
+		//	String titulo = "llibre";
+			sql = "SELECT * FROM libros WHERE titulo LIKE '%" + titulo + "%'";
+
+			ResultSet rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				Libro libro = new Libro();
+				libro.setAutor(rs.getString("autor"));	
+				libro.setEdicion(rs.getString("edicion"));
+				libro.setEditorial(rs.getString("editorial"));
+				libro.setFecha_ed(rs.getDate("fecha_ed"));
+				libro.setFecha_imp(rs.getDate("fecha_imp"));
+				libro.setLengua(rs.getString("lengua"));
+				libro.setTitulo(rs.getString("titulo"));
+				libros.add(libro);	
+			}
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		}
+		finally {
+			try {
+				stmt.close();
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return libros;
+	}
+	
+	
+	@GET
+	@Path("/search/autor/{autor}")
+	@Produces(MediaType.LIBROS_API_LIBRO_COLLECTION)
+	public LibroCollection getLibrosautor(@PathParam("autor")  String autor) {
+//	public LibroCollection LibroCollection() {
+		LibroCollection libros = new LibroCollection();
+
+		Connection conn = null;
+		Statement stmt = null;
+		String sql;
+		try {
+			conn = ds.getConnection();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+		try {
+			stmt = conn.createStatement();
+	//		String autor = "autor3";
+			sql = "SELECT * FROM libros WHERE autor LIKE '%" + autor + "%'";
+
+			ResultSet rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				Libro libro = new Libro();
+				libro.setAutor(rs.getString("autor"));	
+				libro.setEdicion(rs.getString("edicion"));
+				libro.setEditorial(rs.getString("editorial"));
+				libro.setFecha_ed(rs.getDate("fecha_ed"));
+				libro.setFecha_imp(rs.getDate("fecha_imp"));
+				libro.setLengua(rs.getString("lengua"));
+				libro.setTitulo(rs.getString("titulo"));
+				libros.add(libro);	
+			}
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		}
+		finally {
+			try {
+				stmt.close();
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return libros;
+	}
+	
+	
+	@GET
+	@Path("/search/titulo/{titulo}")
 	@Produces(MediaType.LIBROS_API_LIBRO)
-	public Libro getLibro(@PathParam("titulo") String titulo) {
+	public Libro getLibro(@PathParam("titulo")  String titulo) {
 		Libro libro = new Libro();
 		
 		Connection conn = null;
