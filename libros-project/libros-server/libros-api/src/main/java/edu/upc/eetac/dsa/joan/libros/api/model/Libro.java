@@ -3,7 +3,7 @@ package edu.upc.eetac.dsa.joan.libros.api.model;
 import java.sql.Date;
 
 public class Libro {
-
+	public int id;
 	public String autor;
 	public String lengua;
 	public String edicion;
@@ -11,7 +11,15 @@ public class Libro {
 	public Date fecha_imp;
 	public String editorial;
 	public String titulo;
+	
+	public int getId() {
+		return id;
+	}
 
+	public void setId(int id) {
+		this.id = id;
+	}
+	
 	public String getAutor() {
 		return autor;
 	}

@@ -14,6 +14,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
@@ -127,12 +128,10 @@ public class LibroResource {
 	
 	
 	@GET
-	@Path("/search/autor/{autor}")
+	@Path("/search")
 	@Produces(MediaType.LIBROS_API_LIBRO_COLLECTION)
-	public LibroCollection getLibrosautor(@PathParam("autor")  String autor) {
-	//public LibroCollection LibroCollection() {
+	public LibroCollection getLibrosautor(@QueryParam("autor")String autor, @QueryParam("titulo")  String titulo) {
 		LibroCollection libros = new LibroCollection();
-
 		Connection conn = null;
 		Statement stmt = null;
 		String sql;
@@ -144,11 +143,14 @@ public class LibroResource {
 		try {
 			stmt = conn.createStatement();
 		//	String autor = "autor3";
+			
+			
+			if (autor != null){
 			sql = "SELECT * FROM libros WHERE autor LIKE '%" + autor + "%'";
-
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
 				Libro libro = new Libro();
+				libro.setId(rs.getInt("id"));
 				libro.setAutor(rs.getString("autor"));	
 				libro.setEdicion(rs.getString("edicion"));
 				libro.setEditorial(rs.getString("editorial"));
@@ -158,6 +160,23 @@ public class LibroResource {
 				libro.setTitulo(rs.getString("titulo"));
 				libros.add(libro);	
 			}
+			}
+			else if (titulo!=null){
+			sql = "SELECT * FROM libros WHERE titulo LIKE '%" + titulo + "%'";
+			ResultSet rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				Libro libro = new Libro();
+				libro.setId(rs.getInt("id"));
+				libro.setAutor(rs.getString("autor"));	
+				libro.setEdicion(rs.getString("edicion"));
+				libro.setEditorial(rs.getString("editorial"));
+				libro.setFecha_ed(rs.getDate("fecha_ed"));
+				libro.setFecha_imp(rs.getDate("fecha_imp"));
+				libro.setLengua(rs.getString("lengua"));
+				libro.setTitulo(rs.getString("titulo"));
+				libros.add(libro);	
+			}
+			}		
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
 		}
@@ -223,9 +242,8 @@ public class LibroResource {
 	}
 		
 	@DELETE
-	@Path("/{titulo}")
-	public void deleteLibro(@PathParam("titulo") String titulo) {
-	
+	@Path("/{id}")
+	public void deleteLibro(@PathParam("id") int id) {
 		Connection conn = null;
 		Statement stmt = null;
 		try {
@@ -233,23 +251,20 @@ public class LibroResource {
 		} catch (SQLException e) {
 			throw new ServiceUnavailableException(e.getMessage());
 		}
-
 		try {
 			stmt = conn.createStatement();
-			String sql2 = "DELETE FROM resenas WHERE titulolibro='" + titulo + "'";
+			String sql2 = "DELETE FROM resenas WHERE idlibro='" + id + "'";
 			stmt.executeUpdate(sql2);
-			String sql = "DELETE FROM libros WHERE titulo='" + titulo + "'";		
+			String sql = "DELETE FROM libros WHERE id='" + id + "'";		
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
 		}
-
 		finally {
 			try {
 				stmt.close();
 				conn.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -281,8 +296,17 @@ public class LibroResource {
 				String sql = "SELECT * FROM libros WHERE titulo='"
 						+ libro.getTitulo() + "'";
 				ResultSet rs = stmt.executeQuery(sql);
-				rs.next();
 				
+				if (rs.next()) {
+					libro.setId(rs.getInt("id"));
+					libro.setAutor(rs.getString("autor"));	
+					libro.setEdicion(rs.getString("edicion"));
+					libro.setEditorial(rs.getString("editorial"));
+					libro.setFecha_ed(rs.getDate("fecha_ed"));
+					libro.setFecha_imp(rs.getDate("fecha_imp"));
+					libro.setLengua(rs.getString("lengua"));
+					libro.setTitulo(rs.getString("titulo"));
+				}
 			} else
 				throw new UserNotFoundException();
 		} catch (SQLException e) {

@@ -3,18 +3,18 @@ package edu.upc.eetac.dsa.joan.libros.api.model;
 import java.sql.Date;
 
 public class Resena {
+	public int idlibro;
 
 	public String username;
 	public String name;
 	public Date fecha;
 	public String texto;
-	public String titulolibro;
 	
-	public String getTitulolibro() {
-		return titulolibro;
+	public int getIdlibro() {
+		return idlibro;
 	}
-	public void setTitulolibro(String titulolibro) {
-		this.titulolibro = titulolibro;
+	public void setIdlibro(int idlibro) {
+		this.idlibro = idlibro;
 	}
 	public String getUsername() {
 		return username;
@@ -39,7 +39,5 @@ public class Resena {
 	}
 	public void setTexto(String texto) {
 		this.texto = texto;
-	}
-
-	
+	}	
 }

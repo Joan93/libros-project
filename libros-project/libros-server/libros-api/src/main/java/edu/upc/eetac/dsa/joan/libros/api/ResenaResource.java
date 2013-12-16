@@ -57,7 +57,8 @@ public class ResenaResource {
 				resena.setName(rs.getString("name"));
 				resena.setFecha(rs.getDate("fecha"));
 				resena.setTexto(rs.getString("texto"));
-				resena.setTitulolibro(rs.getString("titulolibro"));
+				resena.setIdlibro(rs.getInt("idlibro"));
+		//		resena.setTitulolibro(rs.getString("titulolibro"));
 				resenas.add(resena);	
 			}
 		} catch (SQLException e) {
@@ -102,7 +103,8 @@ public class ResenaResource {
 				resena.setName(rs.getString("name"));
 				resena.setFecha(rs.getDate("fecha"));
 				resena.setTexto(rs.getString("texto"));
-				resena.setTitulolibro(rs.getString("titulolibro"));
+				resena.setIdlibro(rs.getInt("idlibro"));
+			//	resena.setTitulolibro(rs.getString("titulolibro"));
 			}
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
@@ -121,10 +123,10 @@ public class ResenaResource {
 	}
 	
 	@POST
-	@Path("/{titulolibro}")
+	@Path("/{idlibro}")
 	@Consumes(MediaType.LIBROS_API_RESENA)
 	@Produces(MediaType.LIBROS_API_RESENA)
-	public Resena createLibro(@PathParam("titulolibro") String titulolibro,Resena resena) {
+	public Resena createLibro(@PathParam("idlibro") String idlibro,Resena resena) {
 		Connection conn = null;
 		Statement stmt = null;
 		try {
@@ -143,18 +145,17 @@ public class ResenaResource {
 			*/ 
 			
 			
-			update = "INSERT INTO resenas (username,name,fecha,texto,titulolibro) VALUES ('"
+			update = "INSERT INTO resenas (username,name,fecha,texto,idlibro) VALUES ('"
 					+ resena.getUsername() + "','" + resena.getName() + "','" + resena.getFecha() +  "','" + resena.getTexto() + "','"
-					+ titulolibro + "')";
-			
+					+ idlibro + "')";
 			
 			
 			int rows = stmt.executeUpdate(update,
 					Statement.RETURN_GENERATED_KEYS);
 
 			if (rows != 0) {
-				String sql = "SELECT * FROM resenas WHERE titulolibro='"
-						+ resena.getTitulolibro() + "'";
+				String sql = "SELECT * FROM resenas WHERE idlibro='"
+						+ resena.getIdlibro() + "'";
 				ResultSet rs = stmt.executeQuery(sql);
 				rs.next();
 				
@@ -178,8 +179,8 @@ public class ResenaResource {
 	
 	
 	@DELETE
-	@Path("/{titulolibro}")
-	public void deleteResena(@PathParam("titulolibro") String titulolibro) {
+	@Path("/{idlibro}")
+	public void deleteResena(@PathParam("idlibro") String idlibro) {
 
 		Connection conn = null;
 		Statement stmt = null;
@@ -190,9 +191,9 @@ public class ResenaResource {
 		}
 		try {
 			stmt = conn.createStatement();
-			String sql = "DELETE FROM resenas WHERE titulolibro='" + titulolibro + "'";
+			String sql = "DELETE FROM resenas WHERE idlibro='" + idlibro + "'";
 			stmt.executeUpdate(sql);
-			sql = "DELETE FROM resenas WHERE titulolibro='" + titulolibro + "'";
+			sql = "DELETE FROM resenas WHERE idlibro='" + idlibro + "'";
 			stmt.executeUpdate(sql);
 
 		} catch (SQLException e) {
@@ -208,7 +209,4 @@ public class ResenaResource {
 		}
 	}
 
-	
-	
-	
 }
