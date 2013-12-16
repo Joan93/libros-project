@@ -3,13 +3,20 @@ package edu.upc.eetac.dsa.joan.libros.api.model;
 import java.sql.Date;
 
 public class Resena {
+	
+	public int idres;
 	public int idlibro;
-
 	public String username;
 	public String name;
 	public Date fecha;
 	public String texto;
 	
+	public int getIdres() {
+		return idres;
+	}
+	public void setIdres(int idres) {
+		this.idres = idres;
+	}
 	public int getIdlibro() {
 		return idlibro;
 	}

@@ -21,7 +21,7 @@ import edu.upc.eetac.dsa.joan.libros.api.model.Libro;
 import edu.upc.eetac.dsa.joan.libros.api.model.Resena;
 import edu.upc.eetac.dsa.joan.libros.api.model.ResenaCollection;
 
-@Path("/resenas")
+@Path("/libros/{idlibro}/resenas")
 public class ResenaResource {
 
 
@@ -34,10 +34,8 @@ public class ResenaResource {
 
 	@GET
 	@Produces(MediaType.LIBROS_API_RESENA_COLLECTION)
-	public ResenaCollection getResenas() {
-		
+	public ResenaCollection getResenas(@PathParam("idlibro") String idlibro) {
 		ResenaCollection resenas = new ResenaCollection();
-
 		Connection conn = null;
 		Statement stmt = null;
 		String sql;
@@ -48,7 +46,7 @@ public class ResenaResource {
 		}
 		try {
 			stmt = conn.createStatement();
-			sql = "SELECT * FROM resenas";
+			sql = "SELECT * FROM resenas where idlibro='" + idlibro + "'";
 
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
@@ -58,7 +56,7 @@ public class ResenaResource {
 				resena.setFecha(rs.getDate("fecha"));
 				resena.setTexto(rs.getString("texto"));
 				resena.setIdlibro(rs.getInt("idlibro"));
-		//		resena.setTitulolibro(rs.getString("titulolibro"));
+				resena.setIdres(rs.getInt("idres"));
 				resenas.add(resena);	
 			}
 		} catch (SQLException e) {
@@ -68,8 +66,8 @@ public class ResenaResource {
 			try {
 				stmt.close();
 				conn.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
+			}
+			catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
@@ -77,50 +75,7 @@ public class ResenaResource {
 	}
 	
 	
-	
-	@GET
-	@Path("/{titulolibro}")
-	@Produces(MediaType.LIBROS_API_RESENA)
-	public Resena getResena(@PathParam("titulolibro") String titulolibro) {
-		Resena resena = new Resena();
-		
-		Connection conn = null;
-		Statement stmt = null;
-		String sql;
 
-		try {
-			conn = ds.getConnection();
-		} catch (SQLException e) {
-			throw new ServiceUnavailableException(e.getMessage());
-		}
-		try {
-			stmt = conn.createStatement();
-			sql = "SELECT * FROM resenas WHERE titulolibro= '" + titulolibro + "'";
-
-			ResultSet rs = stmt.executeQuery(sql);
-			if (rs.next()) {
-				resena.setUsername(rs.getString("username"));
-				resena.setName(rs.getString("name"));
-				resena.setFecha(rs.getDate("fecha"));
-				resena.setTexto(rs.getString("texto"));
-				resena.setIdlibro(rs.getInt("idlibro"));
-			//	resena.setTitulolibro(rs.getString("titulolibro"));
-			}
-		} catch (SQLException e) {
-			throw new InternalServerException(e.getMessage());
-		}
-
-		finally {
-			try {
-				stmt.close();
-				conn.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return resena;
-	}
 	
 	@POST
 	@Path("/{idlibro}")
@@ -179,8 +134,8 @@ public class ResenaResource {
 	
 	
 	@DELETE
-	@Path("/{idlibro}")
-	public void deleteResena(@PathParam("idlibro") String idlibro) {
+	@Path("/{idres}")
+	public void deleteResena(@PathParam("idres") String idres) {
 
 		Connection conn = null;
 		Statement stmt = null;
@@ -191,9 +146,9 @@ public class ResenaResource {
 		}
 		try {
 			stmt = conn.createStatement();
-			String sql = "DELETE FROM resenas WHERE idlibro='" + idlibro + "'";
+			String sql = "DELETE FROM resenas WHERE idres='" + idres + "'";
 			stmt.executeUpdate(sql);
-			sql = "DELETE FROM resenas WHERE idlibro='" + idlibro + "'";
+			sql = "DELETE FROM resenas WHERE idres='" + idres + "'";
 			stmt.executeUpdate(sql);
 
 		} catch (SQLException e) {
