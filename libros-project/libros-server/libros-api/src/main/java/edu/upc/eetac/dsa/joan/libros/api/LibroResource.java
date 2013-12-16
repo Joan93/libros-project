@@ -270,7 +270,6 @@ public class LibroResource {
 		}
 	}
 
-	
 	@POST
 	@Consumes(MediaType.LIBROS_API_LIBRO)
 	@Produces(MediaType.LIBROS_API_LIBRO)
@@ -348,17 +347,6 @@ public class LibroResource {
 						+ "', libros.fecha_imp= '" + libro.getFecha_imp()
 						+ "', libros.editorial= '" + libro.getEditorial()		
 						+ "' WHERE id='" + id + "'";
-				
-				
-			/*	
-				update = "UPDATE libros SET libros.autor='" + libro.getAutor()
-						+ "' , libros.lengua= '" + libro.getLengua()
-						+ "' WHERE titulo='" + titulo + "'";
-				
-			
-				*/ 
-				
-				
 				int rows = stmt.executeUpdate(update,
 						Statement.RETURN_GENERATED_KEYS);
 				if (rows != 0) {
