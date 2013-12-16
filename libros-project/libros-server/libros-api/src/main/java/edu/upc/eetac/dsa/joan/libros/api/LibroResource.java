@@ -326,11 +326,10 @@ public class LibroResource {
 	
 	
 	@PUT
-	@Path("/{titulo}")
+	@Path("/{id}")
 	@Consumes(MediaType.LIBROS_API_LIBRO)
 	@Produces(MediaType.LIBROS_API_LIBRO)
-	public Libro updateLibro(@PathParam("titulo") String titulo, Libro libro) {
-
+	public Libro updateLibro(@PathParam("id") int id, Libro libro) {
 			Connection conn = null;
 			Statement stmt = null;
 			try {
@@ -341,17 +340,14 @@ public class LibroResource {
 			try {
 				stmt = conn.createStatement();
 				String update = null; // TODO: create update query
-			
-				
-				
 				update = "UPDATE libros SET libros.autor='" + libro.getAutor()
-					//	+ "', libros.autor= '" + libro.getAutor()
+						+ "', libros.titulo= '" + libro.getTitulo()				
 						+ "', libros.lengua= '" + libro.getLengua()
 						+ "', libros.edicion= '" + libro.getEdicion()
 						+ "', libros.fecha_ed= '" + libro.getFecha_ed()
 						+ "', libros.fecha_imp= '" + libro.getFecha_imp()
 						+ "', libros.editorial= '" + libro.getEditorial()		
-						+ "' WHERE titulo='" + titulo + "'";
+						+ "' WHERE id='" + id + "'";
 				
 				
 			/*	
@@ -367,10 +363,19 @@ public class LibroResource {
 						Statement.RETURN_GENERATED_KEYS);
 				if (rows != 0) {
 
-					String sql = "SELECT * FROM libros WHERE titulo='"
-							+ titulo + "'";
+					String sql = "SELECT * FROM libros WHERE id='"
+							+ id + "'";
 					ResultSet rs = stmt.executeQuery(sql);
-					rs.next();	
+					if (rs.next()) {
+						libro.setId(rs.getInt("id"));
+						libro.setAutor(rs.getString("autor"));	
+						libro.setEdicion(rs.getString("edicion"));
+						libro.setEditorial(rs.getString("editorial"));
+						libro.setFecha_ed(rs.getDate("fecha_ed"));
+						libro.setFecha_imp(rs.getDate("fecha_imp"));
+						libro.setLengua(rs.getString("lengua"));
+						libro.setTitulo(rs.getString("titulo"));
+					}
 				} else
 					throw new LibroNotFoundException();
 			} catch (SQLException e) {
