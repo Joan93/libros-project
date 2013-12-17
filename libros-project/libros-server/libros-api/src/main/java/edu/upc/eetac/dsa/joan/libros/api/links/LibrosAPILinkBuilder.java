@@ -4,7 +4,10 @@ import java.net.URI;
 
 import javax.ws.rs.core.UriInfo;
 
-import edu.upc.eetac.dsa.joan.libros.api.*;
+import edu.upc.eetac.dsa.joan.libros.api.LibroResource;
+import edu.upc.eetac.dsa.joan.libros.api.LibrosRootAPIResource;
+import edu.upc.eetac.dsa.joan.libros.api.MediaType;
+import edu.upc.eetac.dsa.joan.libros.api.UserResource;
 import edu.upc.eetac.dsa.joan.libros.api.model.Libro;
 
 public class LibrosAPILinkBuilder {
@@ -28,35 +31,38 @@ public class LibrosAPILinkBuilder {
 
 	// La uri se construye de diferentes maneras según los parametros que
 	// tenemos
-
 	public static final Link buildURILibros(UriInfo uriInfo, String rel) {
-		return buildURILibros(uriInfo, null, null, null, rel); // uri hasta
-																// Libros
+		return buildURILibros(uriInfo, null, null, null, null, rel);
 	}
 
 	public static final Link buildURILibros(UriInfo uriInfo, String offset,
-			String length, String username, String rel) { // poner la uri con
-															// query parámetros
-		URI uriLibros;
+			String length, String titulo, String autor, String rel) {
+		URI uriLibros = null;
 		if (offset == null && length == null)
 			uriLibros = uriInfo.getBaseUriBuilder().path(LibroResource.class)
 					.build();
 		else {
-			if (username == null)
+			if (titulo == null && autor == null)
 				uriLibros = uriInfo.getBaseUriBuilder()
 						.path(LibroResource.class).queryParam("offset", offset)
-						.queryParam("length", length).build(); // no devuelve
-																// una plantilla
-																// sino una con
-																// valores
-																// concretos
+						.queryParam("length", length).build();
+			else if (titulo == null)
+				uriLibros = uriInfo.getBaseUriBuilder()
+						.path(LibroResource.class).queryParam("offset", offset)
+						.queryParam("length", length)
+						.queryParam("autor", autor).build();
+			else if (autor == null)
+				uriLibros = uriInfo.getBaseUriBuilder()
+						.path(LibroResource.class).queryParam("offset", offset)
+						.queryParam("length", length)
+						.queryParam("titulo", titulo).build();
 			else
 				uriLibros = uriInfo.getBaseUriBuilder()
 						.path(LibroResource.class).queryParam("offset", offset)
 						.queryParam("length", length)
-						.queryParam("username", username).build();
+						.queryParam("titulo", titulo)
+						.queryParam("autor", autor).build();
 		}
-
 		Link self = new Link();
 		self.setUri(uriLibros.toString());
 		self.setRel(rel);
@@ -68,20 +74,29 @@ public class LibrosAPILinkBuilder {
 
 	public static final Link buildTemplatedURILibros(UriInfo uriInfo, String rel) {
 
-		return buildTemplatedURILibros(uriInfo, rel, false);
+		return buildTemplatedURILibros(uriInfo, rel, false, false);
 	}
 
 	public static final Link buildTemplatedURILibros(UriInfo uriInfo,
-			String rel, boolean username)
-	// no toman un valor en concreto sino que es una plantilla
-	{
+			String rel, boolean titulo, boolean autor) {
 		URI uriLibros;
-		if (username)
+		if (titulo && autor)
 			uriLibros = uriInfo.getBaseUriBuilder().path(LibroResource.class)
 					.queryParam("offset", "{offset}")
 					.queryParam("length", "{length}")
-					.queryParam("username", "{username}").build();
-		else
+					.queryParam("titulo", "{titulo}")
+					.queryParam("autor", "{autor}").build();
+		else if (titulo && !autor) {
+			uriLibros = uriInfo.getBaseUriBuilder().path(LibroResource.class)
+					.queryParam("offset", "{offset}")
+					.queryParam("length", "{length}")
+					.queryParam("titulo", "{titulo}").build();
+		} else if (!titulo && autor) {
+			uriLibros = uriInfo.getBaseUriBuilder().path(LibroResource.class)
+					.queryParam("offset", "{offset}")
+					.queryParam("length", "{length}")
+					.queryParam("autor", "{autor}").build();
+		} else
 			uriLibros = uriInfo.getBaseUriBuilder().path(LibroResource.class)
 					.queryParam("offset", "{offset}")
 					.queryParam("length", "{length}").build();
@@ -89,87 +104,64 @@ public class LibrosAPILinkBuilder {
 		Link link = new Link();
 		link.setUri(URITemplateBuilder.buildTemplatedURI(uriLibros));
 		link.setRel(rel);
-		if (username)
-			link.setTitle("Libros collection resource filtered by {username}");
+		if (titulo && autor)
+			link.setTitle("Libros collection resource por {titulo} o {autor}");
+		else if (titulo && !autor)
+			link.setTitle("Libros collection resource por {titulo}");
+		else if (!titulo && autor)
+			link.setTitle("Libros collection resource por {autor}");
 		else
 			link.setTitle("Libros collection resource");
 		link.setType(MediaType.LIBROS_API_LIBRO_COLLECTION);
-
 		return link;
 	}
 
-	public final static Link buildURILibro(UriInfo uriInfo, Libro Libro) {
-		URI LibroURI = uriInfo.getBaseUriBuilder().path(LibroResource.class)
-				.build(); // http://localhost:8080/beeter-api/Libros
+	public final static Link buildURILibro(UriInfo uriInfo, Libro libro) {
+		URI stingURI = uriInfo.getBaseUriBuilder().path(LibroResource.class)
+				.build();
 		Link link = new Link();
-		link.setUri(LibroURI.toString());
+		link.setUri(stingURI.toString());
 		link.setRel("self");
-		link.setTitle("Libro " + Libro.getTitulo());
+		link.setTitle("Libro " + libro.getId());
 		link.setType(MediaType.LIBROS_API_LIBRO);
 
 		return link;
 	}
 
-	public final static Link buildURILibroId(UriInfo uriInfo, String Libroid,
+	public final static Link buildURILibroId(UriInfo uriInfo, String id,
 			String rel) {
-		// http://localhost:8080/beeter-api/Libros/{valor Libro}
-		URI LibroURI = uriInfo.getBaseUriBuilder().path(LibroResource.class)
-				.path(LibroResource.class, "getLibro").build(Libroid);
+		URI libroURI = uriInfo.getBaseUriBuilder().path(LibroResource.class)
+				.path(LibroResource.class, "getLibro").build(id);
 		Link link = new Link();
-		link.setUri(LibroURI.toString());
-		link.setRel("self");
-		link.setTitle("Libro " + Libroid);
+		link.setUri(libroURI.toString());
+		link.setRel(rel);
+		link.setTitle("Libro" + id);
 		link.setType(MediaType.LIBROS_API_LIBRO);
 
 		return link;
 	}
 
-	// Users
-
-	public static final Link buildURIUsers(UriInfo uriInfo, String rel) {
-		URI uriUsers;
-
-		uriUsers = uriInfo.getBaseUriBuilder().path(UserResource.class).build();
-
-		Link self = new Link();
-		self.setUri(uriUsers.toString());
-		self.setRel(rel);
-		self.setTitle("Users collection");
-		self.setType(MediaType.LIBROS_API_USER_COLLECTION);
-
-		return self;
-	}
-
-	public static final Link buildTemplatedURIUsers(UriInfo uriInfo, String rel) {
-
-		return buildTemplatedURIUsers(uriInfo, rel, false, false);
-	}
-
-	public static final Link buildTemplatedURIUsers(UriInfo uriInfo,
-			String rel, boolean name, boolean email)
-	// no toman un valor en concreto sino que es una plantilla
-	{
-		URI uriLibros;
-		if (email && name)
-			uriLibros = uriInfo.getBaseUriBuilder().path(LibroResource.class)
-					.queryParam("username", "{username}")
-					.queryParam("name", "{name}")
-					.queryParam("email", "{email}").build();
-		else if (name)
-			uriLibros = uriInfo.getBaseUriBuilder().path(LibroResource.class)
-					.queryParam("username", "{username}")
-					.queryParam("name", "{name}").build();
-		else
-			uriLibros = uriInfo.getBaseUriBuilder().path(LibroResource.class)
-					.queryParam("username", "{username}")
-					.queryParam("email", "{email}").build();
-
+	public final static Link buildURIResenas(UriInfo uriInfo, String rel,
+			String idlibro) {
+		URI uriResena = uriInfo.getBaseUriBuilder().path(LibroResource.class)
+				.path(LibroResource.class, "getResenas").build(idlibro);
 		Link link = new Link();
-		link.setUri(URITemplateBuilder.buildTemplatedURI(uriLibros));
+		link.setUri(uriResena.toString());
 		link.setRel(rel);
+		link.setTitle("Resena collection  Libro id " + idlibro);
+		link.setType(MediaType.LIBROS_API_RESENA_COLLECTION);
+		return link;
+	}
 
-		link.setType(MediaType.LIBROS_API_USER_COLLECTION);
-
+	public final static Link buildURIResenaId(UriInfo uriInfo, String rel,
+			String idres, String idlibro) {
+		URI uriResena = uriInfo.getBaseUriBuilder().path(LibroResource.class)
+				.path(LibroResource.class, "getResena").build(idlibro, idres);
+		Link link = new Link();
+		link.setUri(uriResena.toString());
+		link.setRel(rel);
+		link.setTitle("Resena " + idres);
+		link.setType(MediaType.LIBROS_API_RESENA);
 		return link;
 	}
 
@@ -182,7 +174,7 @@ public class LibrosAPILinkBuilder {
 		link.setRel("self");
 		link.setTitle("User " + username);
 		link.setType(MediaType.LIBROS_API_USER);
-
 		return link;
 	}
+
 }

@@ -74,16 +74,16 @@ public class ResenaResource {
 		return resenas;
 	}
 	
-	
 
 	
 	@POST
-	@Path("/{idlibro}")
 	@Consumes(MediaType.LIBROS_API_RESENA)
 	@Produces(MediaType.LIBROS_API_RESENA)
-	public Resena createLibro(@PathParam("idlibro") String idlibro,Resena resena) {
+	public Resena createResena(@PathParam("idlibro") String idlibro, Resena resena) {
+	
 		Connection conn = null;
 		Statement stmt = null;
+	
 		try {
 			conn = ds.getConnection();
 		} catch (SQLException e) {
@@ -92,30 +92,26 @@ public class ResenaResource {
 		try {
 			stmt = conn.createStatement();
 			String update = null; // TODO: create update query
-			
-			/*
-			update = "INSERT INTO resenas (username,name,fecha,texto) VALUES ('"
-					+ resena.getUsername() + "','" + resena.getName() + "','" + resena.getFecha() + "','"
+			update = "INSERT INTO resenas (idlibro,username,name,fecha,texto) VALUES ('"
+					 + idlibro + "','" + resena.getUsername() +  "','" + resena.getName() + "','"
+					 + resena.getFecha() + "','"  
 					+ resena.getTexto() + "')";
-			*/ 
-			
-			
-			update = "INSERT INTO resenas (username,name,fecha,texto,idlibro) VALUES ('"
-					+ resena.getUsername() + "','" + resena.getName() + "','" + resena.getFecha() +  "','" + resena.getTexto() + "','"
-					+ idlibro + "')";
-			
-			
 			int rows = stmt.executeUpdate(update,
 					Statement.RETURN_GENERATED_KEYS);
-
 			if (rows != 0) {
 				String sql = "SELECT * FROM resenas WHERE idlibro='"
-						+ resena.getIdlibro() + "'";
+						+ idlibro + "'";
 				ResultSet rs = stmt.executeQuery(sql);
-				rs.next();
-				
+				if (rs.next()) {
+					resena.setIdres(rs.getInt("idres"));
+					resena.setIdlibro(rs.getInt("idlibro"));	
+					resena.setUsername(rs.getString("username"));
+					resena.setName(rs.getString("name"));
+					resena.setFecha(rs.getDate("fecha"));
+					resena.setTexto(rs.getString("texto"));
+				}
 			} else
-				throw new ResenaNotFoundException();
+				throw new UserNotFoundException();
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
 		}
@@ -130,6 +126,7 @@ public class ResenaResource {
 		}
 		return resena;
 	}
+	
 	
 	
 	
