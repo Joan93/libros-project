@@ -5,8 +5,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
-import edu.upc.eetac.dsa.joan.libros.api.links.*;
-import edu.upc.eetac.dsa.joan.libros.api.model.LibrosRootAPI;
+import edu.upc.eetac.dsa.joan.libros.api.links.LibrosAPILinkBuilder;
 
 
 @Path("/")

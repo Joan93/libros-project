@@ -1,4 +1,4 @@
-package edu.upc.eetac.dsa.joan.libros.api;
+package edu.upc.eetac.dsa.joan.libros.auth;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;

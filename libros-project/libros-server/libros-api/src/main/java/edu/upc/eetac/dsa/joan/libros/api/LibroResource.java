@@ -21,11 +21,16 @@ import javax.ws.rs.core.UriInfo;
 
 import edu.upc.eetac.dsa.joan.libros.api.model.Libro;
 import edu.upc.eetac.dsa.joan.libros.api.model.LibroCollection;
+import edu.upc.eetac.dsa.joan.libros.api.model.Resena;
+import edu.upc.eetac.dsa.joan.libros.api.model.ResenaCollection;
+
 
 @Path("/libros")
 public class LibroResource {
 
 	private DataSource ds = DataSourceSPA.getInstance().getDataSource();
+	
+	
     @Context
     private UriInfo uriInfo;
     @Context
