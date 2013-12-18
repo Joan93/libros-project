@@ -1,6 +1,10 @@
 package edu.upc.eetac.dsa.joan.libros.api.model;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+
+import edu.upc.eetac.dsa.joan.libros.api.links.Link;
 
 public class Libro {
 	public int id;
@@ -11,6 +15,8 @@ public class Libro {
 	public Date fecha_imp;
 	public String editorial;
 	public String titulo;
+	private List<Link> links = new ArrayList<Link>();
+
 	
 	public int getId() {
 		return id;
@@ -73,5 +79,15 @@ public class Libro {
 
 	public void setTitulo(String titulo) {
 		this.titulo = titulo;
+	}
+	
+	public void add(Link link) {
+		links.add(link);
+	}
+	public List<Link> getLinks() {
+		return links;
+	}
+	public void setLinks(List<Link> links) {
+		this.links = links;
 	}
 }
