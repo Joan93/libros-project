@@ -11,6 +11,9 @@ import edu.upc.eetac.dsa.joan.libros.api.UserResource;
 import edu.upc.eetac.dsa.joan.libros.api.model.Libro;
 
 public class LibrosAPILinkBuilder {
+
+	
+	
 	public final static Link buildURIRootAPI(UriInfo uriInfo) {
 		URI uriRoot = uriInfo.getBaseUriBuilder()
 				.path(LibrosRootAPIResource.class).build();// nos devuelve
@@ -73,7 +76,6 @@ public class LibrosAPILinkBuilder {
 	}
 
 	public static final Link buildTemplatedURILibros(UriInfo uriInfo, String rel) {
-
 		return buildTemplatedURILibros(uriInfo, rel, false, false);
 	}
 
@@ -105,63 +107,38 @@ public class LibrosAPILinkBuilder {
 		link.setUri(URITemplateBuilder.buildTemplatedURI(uriLibros));
 		link.setRel(rel);
 		if (titulo && autor)
-			link.setTitle("Libros collection resource por {titulo} o {autor}");
+			link.setTitle("Libros collection resource filtered by {titulo} or {autor}");
 		else if (titulo && !autor)
-			link.setTitle("Libros collection resource por {titulo}");
+			link.setTitle("Libros collection resource filtered by {titulo}");
 		else if (!titulo && autor)
-			link.setTitle("Libros collection resource por {autor}");
+			link.setTitle("Libros collection resource filtered by {autor}");
 		else
 			link.setTitle("Libros collection resource");
 		link.setType(MediaType.LIBROS_API_LIBRO_COLLECTION);
 		return link;
 	}
 
-	public final static Link buildURILibro(UriInfo uriInfo, Libro libro) {
+	public final static Link buildURILibro(UriInfo uriInfo, Libro Libro) {
 		URI stingURI = uriInfo.getBaseUriBuilder().path(LibroResource.class)
 				.build();
 		Link link = new Link();
 		link.setUri(stingURI.toString());
 		link.setRel("self");
-		link.setTitle("Libro " + libro.getId());
+		link.setTitle("Libro " + Libro.getId());
 		link.setType(MediaType.LIBROS_API_LIBRO);
 
 		return link;
 	}
 
-	public final static Link buildURILibroId(UriInfo uriInfo, String id,
-			String rel) {
-		URI libroURI = uriInfo.getBaseUriBuilder().path(LibroResource.class)
-				.path(LibroResource.class, "getLibro").build(id);
+	public final static Link buildURILibroId(UriInfo uriInfo, int i, String rel) {
+		URI LibroURI = uriInfo.getBaseUriBuilder().path(LibroResource.class)
+				.path(LibroResource.class, "getLibro").build(i);
 		Link link = new Link();
-		link.setUri(libroURI.toString());
+		link.setUri(LibroURI.toString());
 		link.setRel(rel);
-		link.setTitle("Libro" + id);
+		link.setTitle("Libro " + i);
 		link.setType(MediaType.LIBROS_API_LIBRO);
 
-		return link;
-	}
-
-	public final static Link buildURIResenas(UriInfo uriInfo, String rel,
-			String idlibro) {
-		URI uriResena = uriInfo.getBaseUriBuilder().path(LibroResource.class)
-				.path(LibroResource.class, "getResenas").build(idlibro);
-		Link link = new Link();
-		link.setUri(uriResena.toString());
-		link.setRel(rel);
-		link.setTitle("Resena collection  Libro id " + idlibro);
-		link.setType(MediaType.LIBROS_API_RESENA_COLLECTION);
-		return link;
-	}
-
-	public final static Link buildURIResenaId(UriInfo uriInfo, String rel,
-			String idres, String idlibro) {
-		URI uriResena = uriInfo.getBaseUriBuilder().path(LibroResource.class)
-				.path(LibroResource.class, "getResena").build(idlibro, idres);
-		Link link = new Link();
-		link.setUri(uriResena.toString());
-		link.setRel(rel);
-		link.setTitle("Resena " + idres);
-		link.setType(MediaType.LIBROS_API_RESENA);
 		return link;
 	}
 

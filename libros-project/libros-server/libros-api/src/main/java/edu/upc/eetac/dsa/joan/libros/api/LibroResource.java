@@ -35,30 +35,8 @@ public class LibroResource {
 
 	@GET
 	@Produces(MediaType.LIBROS_API_LIBRO_COLLECTION)
-	public LibroCollection getLibros(@QueryParam("titulo") String titulo,
-			@QueryParam("autor") String autor,
-			@QueryParam("offset") String offset,
-			@QueryParam("length") String length) {
-		if ((offset == null) || (length == null))
-			throw new BadRequestException(
-					"offset and length are mandatory parameters");
-		int ioffset, ilength, icount = 0;
-		try {
-			ioffset = Integer.parseInt(offset);
-			if (ioffset < 0)
-				throw new NumberFormatException();
-		} catch (NumberFormatException e) {
-			throw new BadRequestException(
-					"offset must be an integer greater or equal than 0.");
-		}
-		try {
-			ilength = Integer.parseInt(length);
-			if (ilength < 1)
-				throw new NumberFormatException();
-		} catch (NumberFormatException e) {
-			throw new BadRequestException(
-					"length must be an integer greater or equal than 1.");
-		}
+	public LibroCollection getLibros() {
+
 		LibroCollection libros = new LibroCollection();
 		Connection conn = null;
 		Statement stmt = null;
@@ -75,6 +53,7 @@ public class LibroResource {
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
 				Libro libro = new Libro();
+				libro.setId(rs.getInt("id"));
 				libro.setAutor(rs.getString("autor"));
 				libro.setEdicion(rs.getString("edicion"));
 				libro.setEditorial(rs.getString("editorial"));
@@ -82,7 +61,8 @@ public class LibroResource {
 				libro.setFecha_imp(rs.getDate("fecha_imp"));
 				libro.setLengua(rs.getString("lengua"));
 				libro.setTitulo(rs.getString("titulo"));
-
+				libro.add(LibrosAPILinkBuilder.buildURILibroId(uriInfo,
+                         libro.getId(), "self"));
 				libros.add(libro);
 			}
 		} catch (SQLException e) {
@@ -120,6 +100,7 @@ public class LibroResource {
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
 				Libro libro = new Libro();
+				libro.setId(rs.getInt("id"));
 				libro.setAutor(rs.getString("autor"));
 				libro.setEdicion(rs.getString("edicion"));
 				libro.setEditorial(rs.getString("editorial"));
@@ -127,8 +108,10 @@ public class LibroResource {
 				libro.setFecha_imp(rs.getDate("fecha_imp"));
 				libro.setLengua(rs.getString("lengua"));
 				libro.setTitulo(rs.getString("titulo"));
+				libro.add(LibrosAPILinkBuilder.buildURILibroId(uriInfo,
+                        libro.getId(), "self"));
 				libros.add(libro);
-			}
+			}		
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
 		} finally {
@@ -174,6 +157,8 @@ public class LibroResource {
 					libro.setFecha_imp(rs.getDate("fecha_imp"));
 					libro.setLengua(rs.getString("lengua"));
 					libro.setTitulo(rs.getString("titulo"));
+					libro.add(LibrosAPILinkBuilder.buildURILibroId(uriInfo,
+	                        libro.getId(), "self"));
 					libros.add(libro);
 				}
 			} else if (titulo != null) {
@@ -190,6 +175,8 @@ public class LibroResource {
 					libro.setFecha_imp(rs.getDate("fecha_imp"));
 					libro.setLengua(rs.getString("lengua"));
 					libro.setTitulo(rs.getString("titulo"));
+					libro.add(LibrosAPILinkBuilder.buildURILibroId(uriInfo,
+	                        libro.getId(), "self"));
 					libros.add(libro);
 				}
 			}
@@ -227,6 +214,7 @@ public class LibroResource {
 
 			ResultSet rs = stmt.executeQuery(sql);
 			if (rs.next()) {
+				libro.setId(rs.getInt("id"));
 				libro.setAutor(rs.getString("autor"));
 				libro.setEdicion(rs.getString("edicion"));
 				libro.setEditorial(rs.getString("editorial"));
@@ -234,6 +222,8 @@ public class LibroResource {
 				libro.setFecha_imp(rs.getDate("fecha_imp"));
 				libro.setLengua(rs.getString("lengua"));
 				libro.setTitulo(rs.getString("titulo"));
+				libro.add(LibrosAPILinkBuilder.buildURILibroId(uriInfo,
+                        libro.getId(), "self"));
 			}
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
@@ -325,6 +315,8 @@ public class LibroResource {
 					libro.setFecha_imp(rs.getDate("fecha_imp"));
 					libro.setLengua(rs.getString("lengua"));
 					libro.setTitulo(rs.getString("titulo"));
+					libro.add(LibrosAPILinkBuilder.buildURILibroId(uriInfo,
+	                        libro.getId(), "self"));
 				}
 			} else
 				throw new UserNotFoundException();
@@ -382,6 +374,8 @@ public class LibroResource {
 					libro.setFecha_imp(rs.getDate("fecha_imp"));
 					libro.setLengua(rs.getString("lengua"));
 					libro.setTitulo(rs.getString("titulo"));
+					libro.add(LibrosAPILinkBuilder.buildURILibroId(uriInfo,
+	                        libro.getId(), "self"));
 				}
 			} else
 				throw new LibroNotFoundException();
