@@ -186,7 +186,7 @@ public class LibroResource {
 	@Path("/{titulo}")
 	@Produces(MediaType.LIBROS_API_LIBRO)
 	public Libro getLibro(@PathParam("titulo") String titulo) {
-		
+
 		Libro libro = new Libro();
 		Connection conn = null;
 		Statement stmt = null;
@@ -212,8 +212,7 @@ public class LibroResource {
 			}
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
-		}
-		finally {
+		} finally {
 			try {
 				stmt.close();
 				conn.close();
@@ -224,13 +223,12 @@ public class LibroResource {
 		}
 		return libro;
 	}
-	
 
 	@DELETE
 	@Path("/{id}")
 	public void deleteLibro(@PathParam("id") int id) {
 		if (security.isUserInRole("registered")) {
-			throw new NotAllowedException(); 
+			throw new NotAllowedException();
 		}
 		Connection conn = null;
 		Statement stmt = null;
@@ -262,7 +260,7 @@ public class LibroResource {
 	@Produces(MediaType.LIBROS_API_LIBRO)
 	public Libro createLibro(Libro libro) {
 		if (security.isUserInRole("registered")) {
-			throw new NotAllowedException(); 
+			throw new NotAllowedException();
 		}
 		Connection conn = null;
 		Statement stmt = null;
@@ -289,7 +287,6 @@ public class LibroResource {
 					+ "','" + libro.getEditorial() + "')";
 			int rows = stmt.executeUpdate(update,
 					Statement.RETURN_GENERATED_KEYS);
-
 			if (rows != 0) {
 				String sql = "SELECT * FROM libros WHERE titulo='"
 						+ libro.getTitulo() + "'";
@@ -320,17 +317,15 @@ public class LibroResource {
 		return libro;
 	}
 
-	
 	@PUT
 	@Path("/{id}")
 	@Consumes(MediaType.LIBROS_API_LIBRO)
 	@Produces(MediaType.LIBROS_API_LIBRO)
 	public Libro updateLibro(@PathParam("id") int id, Libro libro) {
-		if(security.isUserInRole("registered")){
-			throw new NotAllowedException(); 
+		if (security.isUserInRole("registered")) {
+			throw new NotAllowedException();
 		}
 		Connection conn = null;
-	
 		Statement stmt = null;
 		try {
 			conn = ds.getConnection();
@@ -351,7 +346,6 @@ public class LibroResource {
 			int rows = stmt.executeUpdate(update,
 					Statement.RETURN_GENERATED_KEYS);
 			if (rows != 0) {
-
 				String sql = "SELECT * FROM libros WHERE id='" + id + "'";
 				ResultSet rs = stmt.executeQuery(sql);
 				if (rs.next()) {

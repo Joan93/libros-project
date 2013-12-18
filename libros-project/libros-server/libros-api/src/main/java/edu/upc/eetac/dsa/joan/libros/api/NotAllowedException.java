@@ -10,8 +10,8 @@ public class NotAllowedException extends WebApplicationException {
 
 	public NotAllowedException() {
 		super(Response
-				.status(Response.Status.NOT_FOUND)
-				.entity(new LibrosError(Response.Status.NOT_FOUND
+				.status(Response.Status.FORBIDDEN)
+				.entity(new LibrosError(Response.Status.FORBIDDEN
 						.getStatusCode(), MESSAGE))
 				.type(MediaType.LIBROS_API_ERROR).build());
 	}
