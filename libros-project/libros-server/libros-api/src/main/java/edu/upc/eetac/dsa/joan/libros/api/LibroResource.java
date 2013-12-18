@@ -27,7 +27,6 @@ import edu.upc.eetac.dsa.joan.libros.api.model.LibroCollection;
 public class LibroResource {
 
 	private DataSource ds = DataSourceSPA.getInstance().getDataSource();
-
 	@Context
 	private UriInfo uriInfo;
 	@Context
@@ -37,7 +36,6 @@ public class LibroResource {
 	@Produces(MediaType.LIBROS_API_LIBRO_COLLECTION)
 	public LibroCollection getLibros() {
 		LibroCollection libros = new LibroCollection();
-
 		Connection conn = null;
 		Statement stmt = null;
 		String sql;
@@ -81,7 +79,6 @@ public class LibroResource {
 	@Produces(MediaType.LIBROS_API_LIBRO_COLLECTION)
 	public LibroCollection getLibrostitulo(@PathParam("titulo") String titulo) {
 		LibroCollection libros = new LibroCollection();
-
 		Connection conn = null;
 		Statement stmt = null;
 		String sql;
@@ -194,7 +191,6 @@ public class LibroResource {
 		Connection conn = null;
 		Statement stmt = null;
 		String sql;
-
 		try {
 			conn = ds.getConnection();
 		} catch (SQLException e) {
@@ -217,7 +213,6 @@ public class LibroResource {
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
 		}
-
 		finally {
 			try {
 				stmt.close();
@@ -270,9 +265,7 @@ public class LibroResource {
 			throw new WebApplicationException(
 					"You are not allowed to create books", 403);
 		}
-
 		Connection conn = null;
-
 		Statement stmt = null;
 		try {
 			conn = ds.getConnection();
