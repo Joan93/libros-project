@@ -195,7 +195,6 @@ public class UserResource {
 					Statement.RETURN_GENERATED_KEYS);
 
 			if (rows != 0) {
-
 				String sql = "SELECT * FROM users WHERE username='" + username
 						+ "'";
 				ResultSet rs = stmt.executeQuery(sql);
@@ -206,16 +205,13 @@ public class UserResource {
 
 				user.add(LibrosAPILinkBuilder.buildURIUserName(uriInfo,
 						rs.getString("username"), rel));
-
 			}
-
 			else
 				throw new UserNotFoundException();
 
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
 		}
-
 		finally {
 			try {
 				stmt.close();
@@ -224,9 +220,7 @@ public class UserResource {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
 		}
-
 		return user;
 	}
 
