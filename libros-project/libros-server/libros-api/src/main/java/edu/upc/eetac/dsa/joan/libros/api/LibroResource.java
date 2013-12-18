@@ -224,13 +224,13 @@ public class LibroResource {
 		}
 		return libro;
 	}
+	
 
 	@DELETE
 	@Path("/{id}")
 	public void deleteLibro(@PathParam("id") int id) {
 		if (security.isUserInRole("registered")) {
-			throw new WebApplicationException(
-					"You are not allowed to delete books", 403);
+			throw new NotAllowedException(); 
 		}
 		Connection conn = null;
 		Statement stmt = null;
@@ -262,8 +262,7 @@ public class LibroResource {
 	@Produces(MediaType.LIBROS_API_LIBRO)
 	public Libro createLibro(Libro libro) {
 		if (security.isUserInRole("registered")) {
-			throw new WebApplicationException(
-					"You are not allowed to create books", 403);
+			throw new NotAllowedException(); 
 		}
 		Connection conn = null;
 		Statement stmt = null;
@@ -295,7 +294,6 @@ public class LibroResource {
 				String sql = "SELECT * FROM libros WHERE titulo='"
 						+ libro.getTitulo() + "'";
 				ResultSet rs = stmt.executeQuery(sql);
-
 				if (rs.next()) {
 					libro.setId(rs.getInt("id"));
 					libro.setAutor(rs.getString("autor"));
@@ -322,19 +320,17 @@ public class LibroResource {
 		return libro;
 	}
 
+	
 	@PUT
 	@Path("/{id}")
 	@Consumes(MediaType.LIBROS_API_LIBRO)
 	@Produces(MediaType.LIBROS_API_LIBRO)
 	public Libro updateLibro(@PathParam("id") int id, Libro libro) {
 		if(security.isUserInRole("registered")){
-			throw new WebApplicationException("You are not allowed to update books", 403);
+			throw new NotAllowedException(); 
 		}
 		Connection conn = null;
-		if (!security.isUserInRole("administrator")) {
-			throw new BadRequestException(
-					"Solo administrador puede modificar fichas de libros");
-		}
+	
 		Statement stmt = null;
 		try {
 			conn = ds.getConnection();
