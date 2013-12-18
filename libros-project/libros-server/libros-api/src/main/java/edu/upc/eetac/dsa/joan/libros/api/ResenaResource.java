@@ -8,7 +8,6 @@ import java.sql.Statement;
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -18,7 +17,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
-import edu.upc.eetac.dsa.joan.libros.api.model.Libro;
 import edu.upc.eetac.dsa.joan.libros.api.model.Resena;
 import edu.upc.eetac.dsa.joan.libros.api.model.ResenaCollection;
 
@@ -78,10 +76,8 @@ public class ResenaResource {
 	public Resena createResena(@PathParam("idlibro") String idlibro,
 			Resena resena) {
 		String username = security.getUserPrincipal().getName();
-
 		Connection conn = null;
 		Statement stmt = null;
-
 		try {
 			conn = ds.getConnection();
 		} catch (SQLException e) {
@@ -90,22 +86,17 @@ public class ResenaResource {
 		try {
 			stmt = conn.createStatement();
 			String update = null; // TODO: create update query
-			update = "INSERT INTO resenas (idlibro,username,name,fecha,texto) VALUES ('"
-					+ idlibro
-					+ "','"
-					+ username
-					+ "','"
-					+ resena.getName()
-					+ "','"
-					+ resena.getFecha()
-					+ "','"
-					+ resena.getTexto() + "')";
-			int rows = stmt.executeUpdate(update,
-					Statement.RETURN_GENERATED_KEYS);
-			if (rows != 0) {
-				String sql = "SELECT * FROM resenas WHERE idlibro='" + idlibro
-						+ "'";
-				ResultSet rs = stmt.executeQuery(sql);
+			update = "INSERT INTO resenas (idlibro,username,texto) VALUES ('"
+					+ idlibro + "','" + username + "' ,'" + resena.getTexto()
+					+ "')";
+			stmt.executeUpdate(update, Statement.RETURN_GENERATED_KEYS);
+			ResultSet rs = stmt.getGeneratedKeys();
+			if (rs.next()) {
+				int idres = rs.getInt(1);
+				rs.close();
+				String sql = "SELECT resenas.*, users.name FROM users INNER JOIN resenas ON(idres= '"
+						+ idres + "' and users.username=resenas.username) ";
+				rs = stmt.executeQuery(sql);
 				if (rs.next()) {
 					resena.setIdres(rs.getInt("idres"));
 					resena.setIdlibro(rs.getInt("idlibro"));
@@ -113,7 +104,6 @@ public class ResenaResource {
 					resena.setName(rs.getString("name"));
 					resena.setFecha(rs.getDate("fecha"));
 					resena.setTexto(rs.getString("texto"));
-					resena.setUsername(username);
 				}
 			} else
 				throw new UserNotFoundException();
@@ -144,7 +134,8 @@ public class ResenaResource {
 		}
 		try {
 			stmt = conn.createStatement();
-			String sql = "DELETE FROM resenas WHERE idres='" + idres + "'&& username='"+username+"'";
+			String sql = "DELETE FROM resenas WHERE idres='" + idres
+					+ "'&& username='" + username + "'";
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
