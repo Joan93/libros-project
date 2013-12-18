@@ -18,6 +18,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
+import edu.upc.eetac.dsa.joan.libros.api.links.LibrosAPILinkBuilder;
 import edu.upc.eetac.dsa.joan.libros.api.model.Resena;
 import edu.upc.eetac.dsa.joan.libros.api.model.ResenaCollection;
 
@@ -51,7 +52,7 @@ public class ResenaResource {
 			if (!rs.next()) {
 				throw new ResenaNotFoundException();
 			}
-			rs.previous();
+			//rs.previous();
 			while (rs.next()) {
 				Resena resena = new Resena();
 				resena.setUsername(rs.getString("username"));
@@ -60,7 +61,8 @@ public class ResenaResource {
 				resena.setTexto(rs.getString("texto"));
 				resena.setIdlibro(rs.getInt("idlibro"));
 				resena.setIdres(rs.getInt("idres"));
-				resenas.add(resena);
+		//		resena.add(LibrosAPILinkBuilder.buildURIResenas(uriInfo, "self",idlibro));
+						resenas.add(resena);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -111,6 +113,7 @@ public class ResenaResource {
 					resena.setName(rs.getString("name"));
 					resena.setFecha(rs.getDate("fecha"));
 					resena.setTexto(rs.getString("texto"));
+		//			resena.add(LibrosAPILinkBuilder.buildURIResenaId(uriInfo, "self",resena.getIdres(),idlibro));
 				}
 			} else
 				throw new ResenaNotFoundException();
@@ -225,6 +228,7 @@ public class ResenaResource {
 						resena.setName(rs.getString("name"));
 						resena.setFecha(rs.getDate("fecha"));
 						resena.setTexto(rs.getString("texto"));
+						
 					}
 				} else
 					throw new ResenaNotFoundException();

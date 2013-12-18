@@ -7,6 +7,7 @@ import javax.ws.rs.core.UriInfo;
 import edu.upc.eetac.dsa.joan.libros.api.LibroResource;
 import edu.upc.eetac.dsa.joan.libros.api.LibrosRootAPIResource;
 import edu.upc.eetac.dsa.joan.libros.api.MediaType;
+import edu.upc.eetac.dsa.joan.libros.api.ResenaResource;
 import edu.upc.eetac.dsa.joan.libros.api.UserResource;
 import edu.upc.eetac.dsa.joan.libros.api.model.Libro;
 
@@ -69,7 +70,6 @@ public class LibrosAPILinkBuilder {
 		self.setRel(rel);
 		self.setTitle("Libros collection");
 		self.setType(MediaType.LIBROS_API_LIBRO_COLLECTION);
-
 		return self;
 	}
 
@@ -150,24 +150,26 @@ public class LibrosAPILinkBuilder {
 		link.setTitle("User " + username);
 		link.setType(MediaType.LIBROS_API_USER);
 		return link;
-	}
-
+	} 
+	
+	
+/*
 	public final static Link buildURIResenas(UriInfo uriInfo, String rel,
-			int libroid) {
+			String idlibro) {
 		URI uriReview = uriInfo.getBaseUriBuilder().path(LibroResource.class)
-				.path(LibroResource.class, "getResenas").build(libroid);
+				.path(ResenaResource.class, "getResena").build(idlibro);
 		Link link = new Link();
 		link.setUri(uriReview.toString());
 		link.setRel(rel);
-		link.setTitle("Resena collection resource from Libro id " + libroid);
+		link.setTitle("Resena collection resource from Libro id " + idlibro);
 		link.setType(MediaType.LIBROS_API_RESENA_COLLECTION);
 		return link;
 	}
 
 	public final static Link buildURIResenaId(UriInfo uriInfo, String rel,
-			int resenaid, int libroid) {
+			int resenaid, String idlibro) {
 		URI uriReview = uriInfo.getBaseUriBuilder().path(LibroResource.class)
-				.path(LibroResource.class, "getResenas").build(libroid, resenaid);
+				.path(ResenaResource.class, "getResena").build(idlibro, resenaid);
 		Link link = new Link();
 		link.setUri(uriReview.toString());
 		link.setRel(rel);
@@ -175,5 +177,5 @@ public class LibrosAPILinkBuilder {
 		link.setType(MediaType.LIBROS_API_RESENA);
 		return link;
 	}
-
+*/ 
 }

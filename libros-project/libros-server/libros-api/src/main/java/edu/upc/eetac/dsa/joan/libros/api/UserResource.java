@@ -18,6 +18,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
+import org.omg.PortableInterceptor.SUCCESSFUL;
+
 import edu.upc.eetac.dsa.joan.libros.api.links.LibrosAPILinkBuilder;
 import edu.upc.eetac.dsa.joan.libros.api.model.LibrosRootAPI;
 import edu.upc.eetac.dsa.joan.libros.api.model.User;
@@ -145,6 +147,7 @@ public class UserResource {
 			try {
 				stmt.close();
 				conn.close();
+			
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
