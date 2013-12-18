@@ -10,6 +10,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -47,6 +48,10 @@ public class ResenaResource {
 			sql = "SELECT resenas.*, users.name FROM users INNER JOIN resenas ON(idlibro= '"
 					+ idlibro + "' and users.username=resenas.username) ";
 			ResultSet rs = stmt.executeQuery(sql);
+			if (!rs.next()) {
+				throw new ResenaNotFoundException();
+			}
+			rs.previous();
 			while (rs.next()) {
 				Resena resena = new Resena();
 				resena.setUsername(rs.getString("username"));
@@ -58,7 +63,8 @@ public class ResenaResource {
 				resenas.add(resena);
 			}
 		} catch (SQLException e) {
-			throw new InternalServerException(e.getMessage());
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} finally {
 			try {
 				stmt.close();
@@ -97,6 +103,7 @@ public class ResenaResource {
 				String sql = "SELECT resenas.*, users.name FROM users INNER JOIN resenas ON(idres= '"
 						+ idres + "' and users.username=resenas.username) ";
 				rs = stmt.executeQuery(sql);
+
 				if (rs.next()) {
 					resena.setIdres(rs.getInt("idres"));
 					resena.setIdlibro(rs.getInt("idlibro"));
@@ -106,7 +113,7 @@ public class ResenaResource {
 					resena.setTexto(rs.getString("texto"));
 				}
 			} else
-				throw new UserNotFoundException();
+				throw new ResenaNotFoundException();
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
 		} finally {
@@ -121,37 +128,6 @@ public class ResenaResource {
 		return resena;
 	}
 
-	
-	
-	/*
-	@DELETE
-	@Path("/{idres}")
-	public void deleteResena(@PathParam("idres") String idres) {
-		String username = security.getUserPrincipal().getName();
-		Connection conn = null;
-		Statement stmt = null;
-		try {
-			conn = ds.getConnection();
-		} catch (SQLException e) {
-			throw new ServiceUnavailableException(e.getMessage());
-		}
-		try {
-			stmt = conn.createStatement();
-			String sql = "DELETE FROM resenas WHERE idres='" + idres
-					+ "'&& username='" + username + "'";
-			stmt.executeUpdate(sql);
-		} catch (SQLException e) {
-			throw new InternalServerException(e.getMessage());
-		} finally {
-			try {
-				stmt.close();
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	} */ 
-	
 	@DELETE
 	@Path("/{idres}")
 	public void deleteResena(@PathParam("idres") String idres) {
@@ -169,7 +145,10 @@ public class ResenaResource {
 			stmt = conn.createStatement();
 			sql = "SELECT * FROM resenas WHERE idres='" + idres + "'";
 			rs = stmt.executeQuery(sql);
-			rs.next();
+			if (!rs.next()) {
+				throw new ResenaNotFoundException();
+			}
+		//	rs.next();
 			username = rs.getString("username");
 
 		} catch (SQLException e) {
@@ -192,12 +171,76 @@ public class ResenaResource {
 					e.printStackTrace();
 				}
 			}
-		}
-		else {
+		} else {
 			throw new NotAllowedException();
 		}
 	}
-	
-	
-	
+
+	@PUT
+	@Path("/{idres}")
+	@Consumes(MediaType.LIBROS_API_RESENA)
+	@Produces(MediaType.LIBROS_API_RESENA)
+	public Resena updateResena(@PathParam("idres") String idres, Resena resena) {
+
+		String username;
+		Connection conn = null;
+		Statement stmt = null;
+		String sql;
+		ResultSet rs;
+
+		try {
+			conn = ds.getConnection();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+
+		try {
+			stmt = conn.createStatement();
+			sql = "SELECT * FROM resenas WHERE idres='" + idres + "'";
+			rs = stmt.executeQuery(sql);
+			rs.next();
+			username = rs.getString("username");
+
+		} catch (SQLException e) {
+			throw new ResenaNotFoundException();
+		}
+
+		if (security.getUserPrincipal().getName().equals(username)) {
+			try {
+				stmt = conn.createStatement();
+				String update = null;
+				update = "UPDATE resenas SET resenas.texto ='"
+						+ resena.getTexto() + "'WHERE idres='" + idres + "'";
+				int rows = stmt.executeUpdate(update,
+						Statement.RETURN_GENERATED_KEYS);
+				if (rows != 0) {
+
+					sql = "SELECT resenas.*, users.name FROM users INNER JOIN resenas ON(idres= '"
+							+ idres + "' and users.username=resenas.username) ";
+					rs = stmt.executeQuery(sql);
+					if (rs.next()) {
+						resena.setIdres(rs.getInt("idres"));
+						resena.setIdlibro(rs.getInt("idlibro"));
+						resena.setUsername(rs.getString("username"));
+						resena.setName(rs.getString("name"));
+						resena.setFecha(rs.getDate("fecha"));
+						resena.setTexto(rs.getString("texto"));
+					}
+				} else
+					throw new ResenaNotFoundException();
+			} catch (SQLException e) {
+				throw new InternalServerException(e.getMessage());
+			} finally {
+				try {
+					stmt.close();
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		} else {
+		}
+		return resena;
+	}
 }
