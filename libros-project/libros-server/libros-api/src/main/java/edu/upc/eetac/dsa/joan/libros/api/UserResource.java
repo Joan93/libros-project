@@ -23,7 +23,6 @@ import edu.upc.eetac.dsa.joan.libros.api.model.LibrosRootAPI;
 import edu.upc.eetac.dsa.joan.libros.api.model.User;
 import edu.upc.eetac.dsa.joan.libros.api.model.UserCollection;
 
-
 @Path("/users")
 public class UserResource {
 
@@ -183,7 +182,6 @@ public class UserResource {
 						+ "' WHERE username='" + username + "'";
 
 			}
-
 			else if (user.getName() == null && user.getEmail() != null) {
 				update = "UPDATE users SET users.email='" + user.getEmail()
 						+ "' WHERE username='" + username + "'";
@@ -193,7 +191,6 @@ public class UserResource {
 			}
 			int rows = stmt.executeUpdate(update,
 					Statement.RETURN_GENERATED_KEYS);
-
 			if (rows != 0) {
 				String sql = "SELECT * FROM users WHERE username='" + username
 						+ "'";
@@ -208,7 +205,6 @@ public class UserResource {
 			}
 			else
 				throw new UserNotFoundException();
-
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
 		}
@@ -228,7 +224,6 @@ public class UserResource {
 	@Consumes(MediaType.LIBROS_API_USER)
 	@Produces(MediaType.LIBROS_API_USER)
 	public User createUser(User user) {
-
 		// TODO: get connection from database
 		Connection conn = null;
 		Statement stmt = null;
