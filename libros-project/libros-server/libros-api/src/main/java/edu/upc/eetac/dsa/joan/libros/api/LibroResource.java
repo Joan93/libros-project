@@ -230,7 +230,7 @@ public class LibroResource {
 	public void deleteLibro(@PathParam("id") int id) {
 		if (security.isUserInRole("registered")) {
 			throw new WebApplicationException(
-					"You are not allowed to create books", 403);
+					"You are not allowed to delete books", 403);
 		}
 		Connection conn = null;
 		Statement stmt = null;
@@ -328,7 +328,7 @@ public class LibroResource {
 	@Produces(MediaType.LIBROS_API_LIBRO)
 	public Libro updateLibro(@PathParam("id") int id, Libro libro) {
 		if(security.isUserInRole("registered")){
-			throw new WebApplicationException("You are not allowed to create books", 403);
+			throw new WebApplicationException("You are not allowed to update books", 403);
 		}
 		Connection conn = null;
 		if (!security.isUserInRole("administrator")) {

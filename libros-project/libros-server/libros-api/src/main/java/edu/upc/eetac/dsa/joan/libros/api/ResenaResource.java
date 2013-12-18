@@ -46,8 +46,8 @@ public class ResenaResource {
 		}
 		try {
 			stmt = conn.createStatement();
-			sql = "SELECT * FROM resenas where idlibro='" + idlibro + "'";
-
+			sql = "SELECT resenas.*, users.name FROM users INNER JOIN resenas ON(idlibro= '"
+					+ idlibro + "' and users.username=resenas.username) ";
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
 				Resena resena = new Resena();
@@ -128,34 +128,13 @@ public class ResenaResource {
 				e.printStackTrace();
 			}
 		}
-
 		return resena;
 	}
 
 	@DELETE
 	@Path("/{idres}")
 	public void deleteResena(@PathParam("idres") String idres) {
-
-		try {
-			Connection conn = null;
-			Statement stmt = null;
-			String sql;
-			conn = ds.getConnection();
-			stmt = conn.createStatement();
-			sql = "SELECT * FROM resenas where idres='" + idres + "'";
-			ResultSet rs = stmt.executeQuery(sql);
-			Resena resena = new Resena();
-			resena.setUsername(rs.getString("username"));
-
-			if (security.isUserInRole("registered")) {
-				if (!security.getUserPrincipal().getName()
-						.equals(resena.getUsername())) {
-					throw new ForbiddenException("You are not allowed");
-				}
-			}
-		} catch (SQLException e) {
-			throw new InternalServerException(e.getMessage());
-		}
+		String username = security.getUserPrincipal().getName();
 		Connection conn = null;
 		Statement stmt = null;
 		try {
@@ -165,11 +144,8 @@ public class ResenaResource {
 		}
 		try {
 			stmt = conn.createStatement();
-			String sql = "DELETE FROM resenas WHERE idres='" + idres + "'";
+			String sql = "DELETE FROM resenas WHERE idres='" + idres + "'&& username='"+username+"'";
 			stmt.executeUpdate(sql);
-			sql = "DELETE FROM resenas WHERE idres='" + idres + "'";
-			stmt.executeUpdate(sql);
-
 		} catch (SQLException e) {
 			throw new InternalServerException(e.getMessage());
 		} finally {
@@ -177,7 +153,6 @@ public class ResenaResource {
 				stmt.close();
 				conn.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

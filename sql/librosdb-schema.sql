@@ -24,8 +24,7 @@ create table resenas (
 	idres int not null auto_increment primary key,
 	idlibro int not null,
     username	varchar(20) not null,
-	name		varchar(70) not null,
-	fecha date,
+	fecha timestamp,
 	texto varchar(500) not null,
 	foreign key(username) references users(username),
 	foreign key(idlibro) references libros(id)
