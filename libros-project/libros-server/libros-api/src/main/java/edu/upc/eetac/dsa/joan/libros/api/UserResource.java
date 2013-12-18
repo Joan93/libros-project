@@ -19,6 +19,7 @@ import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
 import edu.upc.eetac.dsa.joan.libros.api.links.LibrosAPILinkBuilder;
+import edu.upc.eetac.dsa.joan.libros.api.model.LibrosRootAPI;
 import edu.upc.eetac.dsa.joan.libros.api.model.User;
 import edu.upc.eetac.dsa.joan.libros.api.model.UserCollection;
 

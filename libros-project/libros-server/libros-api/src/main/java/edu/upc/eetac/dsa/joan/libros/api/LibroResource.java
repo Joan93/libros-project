@@ -15,27 +15,24 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
 import edu.upc.eetac.dsa.joan.libros.api.model.Libro;
 import edu.upc.eetac.dsa.joan.libros.api.model.LibroCollection;
-import edu.upc.eetac.dsa.joan.libros.api.model.Resena;
-import edu.upc.eetac.dsa.joan.libros.api.model.ResenaCollection;
-
 
 @Path("/libros")
 public class LibroResource {
 
 	private DataSource ds = DataSourceSPA.getInstance().getDataSource();
-	
-	
-    @Context
-    private UriInfo uriInfo;
-    @Context
-    private SecurityContext security;
-    
+
+	@Context
+	private UriInfo uriInfo;
+	@Context
+	private SecurityContext security;
+
 	@GET
 	@Produces(MediaType.LIBROS_API_LIBRO_COLLECTION)
 	public LibroCollection getLibros() {
@@ -192,8 +189,8 @@ public class LibroResource {
 	@Path("/{titulo}")
 	@Produces(MediaType.LIBROS_API_LIBRO)
 	public Libro getLibro(@PathParam("titulo") String titulo) {
+		
 		Libro libro = new Libro();
-
 		Connection conn = null;
 		Statement stmt = null;
 		String sql;
@@ -236,9 +233,11 @@ public class LibroResource {
 	@DELETE
 	@Path("/{id}")
 	public void deleteLibro(@PathParam("id") int id) {
+		if (security.isUserInRole("registered")) {
+			throw new WebApplicationException(
+					"You are not allowed to create books", 403);
+		}
 		Connection conn = null;
-	
-		
 		Statement stmt = null;
 		try {
 			conn = ds.getConnection();
@@ -267,6 +266,11 @@ public class LibroResource {
 	@Consumes(MediaType.LIBROS_API_LIBRO)
 	@Produces(MediaType.LIBROS_API_LIBRO)
 	public Libro createLibro(Libro libro) {
+		if (security.isUserInRole("registered")) {
+			throw new WebApplicationException(
+					"You are not allowed to create books", 403);
+		}
+
 		Connection conn = null;
 
 		Statement stmt = null;
@@ -330,8 +334,14 @@ public class LibroResource {
 	@Consumes(MediaType.LIBROS_API_LIBRO)
 	@Produces(MediaType.LIBROS_API_LIBRO)
 	public Libro updateLibro(@PathParam("id") int id, Libro libro) {
+		if(security.isUserInRole("registered")){
+			throw new WebApplicationException("You are not allowed to create books", 403);
+		}
 		Connection conn = null;
-		
+		if (!security.isUserInRole("administrator")) {
+			throw new BadRequestException(
+					"Solo administrador puede modificar fichas de libros");
+		}
 		Statement stmt = null;
 		try {
 			conn = ds.getConnection();

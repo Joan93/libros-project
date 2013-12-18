@@ -1,4 +1,4 @@
-package edu.upc.eetac.dsa.joan.libros.api;
+package edu.upc.eetac.dsa.joan.libros.api.model;
 
 import java.util.ArrayList;
 import java.util.List;

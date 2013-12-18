@@ -31,7 +31,7 @@ public class ResenaResource {
 	@Context
 	private SecurityContext security;
 	private DataSource ds = DataSourceSPA.getInstance().getDataSource();
-	
+
 	@GET
 	@Produces(MediaType.LIBROS_API_RESENA_COLLECTION)
 	public ResenaCollection getResenas(@PathParam("idlibro") String idlibro) {
@@ -77,62 +77,58 @@ public class ResenaResource {
 	@Produces(MediaType.LIBROS_API_RESENA)
 	public Resena createResena(@PathParam("idlibro") String idlibro,
 			Resena resena) {
+		String username = security.getUserPrincipal().getName();
 
-		if (security.isUserInRole("registered")) {
-			if (!security.getUserPrincipal().getName()
-					.equals(resena.getUsername())) {
-				throw new ForbiddenException(
-						"You are not allowed to update an sting that isn't yours");
-			} else {
-				Connection conn = null;
-				Statement stmt = null;
+		Connection conn = null;
+		Statement stmt = null;
 
-				try {
-					conn = ds.getConnection();
-				} catch (SQLException e) {
-					throw new ServiceUnavailableException(e.getMessage());
+		try {
+			conn = ds.getConnection();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+		try {
+			stmt = conn.createStatement();
+			String update = null; // TODO: create update query
+			update = "INSERT INTO resenas (idlibro,username,name,fecha,texto) VALUES ('"
+					+ idlibro
+					+ "','"
+					+ username
+					+ "','"
+					+ resena.getName()
+					+ "','"
+					+ resena.getFecha()
+					+ "','"
+					+ resena.getTexto() + "')";
+			int rows = stmt.executeUpdate(update,
+					Statement.RETURN_GENERATED_KEYS);
+			if (rows != 0) {
+				String sql = "SELECT * FROM resenas WHERE idlibro='" + idlibro
+						+ "'";
+				ResultSet rs = stmt.executeQuery(sql);
+				if (rs.next()) {
+					resena.setIdres(rs.getInt("idres"));
+					resena.setIdlibro(rs.getInt("idlibro"));
+					resena.setUsername(rs.getString("username"));
+					resena.setName(rs.getString("name"));
+					resena.setFecha(rs.getDate("fecha"));
+					resena.setTexto(rs.getString("texto"));
+					resena.setUsername(username);
 				}
-				try {
-					stmt = conn.createStatement();
-					String update = null; // TODO: create update query
-					update = "INSERT INTO resenas (idlibro,username,name,fecha,texto) VALUES ('"
-							+ idlibro
-							+ "','"
-							+ resena.getUsername()
-							+ "','"
-							+ resena.getName()
-							+ "','"
-							+ resena.getFecha()
-							+ "','" + resena.getTexto() + "')";
-					int rows = stmt.executeUpdate(update,
-							Statement.RETURN_GENERATED_KEYS);
-					if (rows != 0) {
-						String sql = "SELECT * FROM resenas WHERE idlibro='"
-								+ idlibro + "'";
-						ResultSet rs = stmt.executeQuery(sql);
-						if (rs.next()) {
-							resena.setIdres(rs.getInt("idres"));
-							resena.setIdlibro(rs.getInt("idlibro"));
-							resena.setUsername(rs.getString("username"));
-							resena.setName(rs.getString("name"));
-							resena.setFecha(rs.getDate("fecha"));
-							resena.setTexto(rs.getString("texto"));
-						}
-					} else
-						throw new UserNotFoundException();
-				} catch (SQLException e) {
-					throw new InternalServerException(e.getMessage());
-				} finally {
-					try {
-						stmt.close();
-						conn.close();
-					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
+			} else
+				throw new UserNotFoundException();
+		} catch (SQLException e) {
+			throw new InternalServerException(e.getMessage());
+		} finally {
+			try {
+				stmt.close();
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
+
 		return resena;
 	}
 
@@ -152,7 +148,8 @@ public class ResenaResource {
 			resena.setUsername(rs.getString("username"));
 
 			if (security.isUserInRole("registered")) {
-				if (!security.getUserPrincipal().getName().equals(resena.getUsername())) {
+				if (!security.getUserPrincipal().getName()
+						.equals(resena.getUsername())) {
 					throw new ForbiddenException("You are not allowed");
 				}
 			}
