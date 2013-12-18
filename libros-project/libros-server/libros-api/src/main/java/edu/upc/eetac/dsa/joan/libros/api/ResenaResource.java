@@ -61,8 +61,8 @@ public class ResenaResource {
 				resena.setTexto(rs.getString("texto"));
 				resena.setIdlibro(rs.getInt("idlibro"));
 				resena.setIdres(rs.getInt("idres"));
-		//		resena.add(LibrosAPILinkBuilder.buildURIResenas(uriInfo, "self",idlibro));
-						resenas.add(resena);
+				resena.add(LibrosAPILinkBuilder.buildURIResenaId(uriInfo, "self",rs.getInt("idres"),idlibro));	
+				resenas.add(resena);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -113,7 +113,8 @@ public class ResenaResource {
 					resena.setName(rs.getString("name"));
 					resena.setFecha(rs.getDate("fecha"));
 					resena.setTexto(rs.getString("texto"));
-		//			resena.add(LibrosAPILinkBuilder.buildURIResenaId(uriInfo, "self",resena.getIdres(),idlibro));
+					resena.add(LibrosAPILinkBuilder.buildURIResenaId(uriInfo, "self",rs.getInt("idres"),idlibro));	
+		
 				}
 			} else
 				throw new ResenaNotFoundException();
@@ -183,7 +184,7 @@ public class ResenaResource {
 	@Path("/{idres}")
 	@Consumes(MediaType.LIBROS_API_RESENA)
 	@Produces(MediaType.LIBROS_API_RESENA)
-	public Resena updateResena(@PathParam("idres") String idres, Resena resena) {
+	public Resena updateResena(@PathParam("idres") String idres, Resena resena, @PathParam("idlibro") String idlibro) {
 
 		String username;
 		Connection conn = null;
@@ -228,7 +229,7 @@ public class ResenaResource {
 						resena.setName(rs.getString("name"));
 						resena.setFecha(rs.getDate("fecha"));
 						resena.setTexto(rs.getString("texto"));
-						
+						resena.add(LibrosAPILinkBuilder.buildURIResenaId(uriInfo, "self",rs.getInt("idres"),idlibro));						
 					}
 				} else
 					throw new ResenaNotFoundException();

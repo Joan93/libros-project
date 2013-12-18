@@ -152,26 +152,11 @@ public class LibrosAPILinkBuilder {
 		link.setType(MediaType.LIBROS_API_USER);
 		return link;
 	} 
-	
-
-/*
-	public final static Link buildURIResena(UriInfo uriInfo, String rel,
-			String idlibro) {
-		URI uriReview = uriInfo.getBaseUriBuilder().path(LibroResource.class)
-				.path(ResenaResource.class, "getResena").build(idlibro);
-		Link link = new Link();
-		link.setUri(uriReview.toString());
-		link.setRel(rel);
-		link.setTitle("Resena collection resource from Libro id " + idlibro);
-		link.setType(MediaType.LIBROS_API_RESENA_COLLECTION);
-		return link;
-	}
-	*/
 
 	public final static Link buildURIResenaId(UriInfo uriInfo, String rel,
 			int idres, String idlibro) {
 		
-		URI resenaURI = uriInfo.getBaseUriBuilder().path(LibroResource.class).path("/" + idlibro).path("/resenas").path("/+idresena").build();
+		URI resenaURI = uriInfo.getBaseUriBuilder().path(LibroResource.class).path("/" + idlibro).path("/resenas").path("/"+idres).build();
 		Link link = new Link();
 		link.setUri(resenaURI.toString());
 		link.setRel(rel);
