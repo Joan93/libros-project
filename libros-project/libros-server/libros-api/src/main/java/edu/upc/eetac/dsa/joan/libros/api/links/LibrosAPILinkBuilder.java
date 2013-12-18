@@ -12,8 +12,6 @@ import edu.upc.eetac.dsa.joan.libros.api.model.Libro;
 
 public class LibrosAPILinkBuilder {
 
-	
-	
 	public final static Link buildURIRootAPI(UriInfo uriInfo) {
 		URI uriRoot = uriInfo.getBaseUriBuilder()
 				.path(LibrosRootAPIResource.class).build();// nos devuelve
@@ -151,6 +149,30 @@ public class LibrosAPILinkBuilder {
 		link.setRel("self");
 		link.setTitle("User " + username);
 		link.setType(MediaType.LIBROS_API_USER);
+		return link;
+	}
+
+	public final static Link buildURIResenas(UriInfo uriInfo, String rel,
+			int libroid) {
+		URI uriReview = uriInfo.getBaseUriBuilder().path(LibroResource.class)
+				.path(LibroResource.class, "getResenas").build(libroid);
+		Link link = new Link();
+		link.setUri(uriReview.toString());
+		link.setRel(rel);
+		link.setTitle("Resena collection resource from Libro id " + libroid);
+		link.setType(MediaType.LIBROS_API_RESENA_COLLECTION);
+		return link;
+	}
+
+	public final static Link buildURIResenaId(UriInfo uriInfo, String rel,
+			int resenaid, int libroid) {
+		URI uriReview = uriInfo.getBaseUriBuilder().path(LibroResource.class)
+				.path(LibroResource.class, "getResenas").build(libroid, resenaid);
+		Link link = new Link();
+		link.setUri(uriReview.toString());
+		link.setRel(rel);
+		link.setTitle("Resena " + resenaid);
+		link.setType(MediaType.LIBROS_API_RESENA);
 		return link;
 	}
 
