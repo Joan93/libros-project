@@ -54,13 +54,13 @@ public class LibroResource {
 			while (rs.next()) {
 				Libro libro = new Libro();
 				libro.setId(rs.getInt("id"));
+				libro.setTitulo(rs.getString("titulo"));
 				libro.setAutor(rs.getString("autor"));
 				libro.setEdicion(rs.getString("edicion"));
 				libro.setEditorial(rs.getString("editorial"));
 				libro.setFecha_ed(rs.getDate("fecha_ed"));
 				libro.setFecha_imp(rs.getDate("fecha_imp"));
-				libro.setLengua(rs.getString("lengua"));
-				libro.setTitulo(rs.getString("titulo"));
+				libro.setLengua(rs.getString("lengua"));			
 				libro.add(LibrosAPILinkBuilder.buildURILibroId(uriInfo,
                          libro.getId(), "self"));
 				libros.add(libro);
@@ -79,57 +79,11 @@ public class LibroResource {
 		return libros;
 	}
 
-	@GET
-	@Path("/search/titulo/{titulo}")
-	@Produces(MediaType.LIBROS_API_LIBRO_COLLECTION)
-	public LibroCollection getLibrostitulo(@PathParam("titulo") String titulo) {
-		LibroCollection libros = new LibroCollection();
-		Connection conn = null;
-		Statement stmt = null;
-		String sql;
-		try {
-			conn = ds.getConnection();
-		} catch (SQLException e) {
-			throw new ServiceUnavailableException(e.getMessage());
-		}
-		try {
-			stmt = conn.createStatement();
-			// String titulo = "llibre";
-			sql = "SELECT * FROM libros WHERE titulo LIKE '%" + titulo + "%'";
-
-			ResultSet rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				Libro libro = new Libro();
-				libro.setId(rs.getInt("id"));
-				libro.setAutor(rs.getString("autor"));
-				libro.setEdicion(rs.getString("edicion"));
-				libro.setEditorial(rs.getString("editorial"));
-				libro.setFecha_ed(rs.getDate("fecha_ed"));
-				libro.setFecha_imp(rs.getDate("fecha_imp"));
-				libro.setLengua(rs.getString("lengua"));
-				libro.setTitulo(rs.getString("titulo"));
-				libro.add(LibrosAPILinkBuilder.buildURILibroId(uriInfo,
-                        libro.getId(), "self"));
-				libros.add(libro);
-			}		
-		} catch (SQLException e) {
-			throw new InternalServerException(e.getMessage());
-		} finally {
-			try {
-				stmt.close();
-				conn.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return libros;
-	}
-
+	
 	@GET
 	@Path("/search")
 	@Produces(MediaType.LIBROS_API_LIBRO_COLLECTION)
-	public LibroCollection getLibrosautor(@QueryParam("autor") String autor,
+	public LibroCollection getLibroparametros(@QueryParam("autor") String autor,
 			@QueryParam("titulo") String titulo) {
 		LibroCollection libros = new LibroCollection();
 		Connection conn = null;
@@ -150,13 +104,13 @@ public class LibroResource {
 				while (rs.next()) {
 					Libro libro = new Libro();
 					libro.setId(rs.getInt("id"));
+					libro.setTitulo(rs.getString("titulo"));
 					libro.setAutor(rs.getString("autor"));
 					libro.setEdicion(rs.getString("edicion"));
 					libro.setEditorial(rs.getString("editorial"));
 					libro.setFecha_ed(rs.getDate("fecha_ed"));
 					libro.setFecha_imp(rs.getDate("fecha_imp"));
-					libro.setLengua(rs.getString("lengua"));
-					libro.setTitulo(rs.getString("titulo"));
+					libro.setLengua(rs.getString("lengua"));		
 					libro.add(LibrosAPILinkBuilder.buildURILibroId(uriInfo,
 	                        libro.getId(), "self"));
 					libros.add(libro);
@@ -168,13 +122,13 @@ public class LibroResource {
 				while (rs.next()) {
 					Libro libro = new Libro();
 					libro.setId(rs.getInt("id"));
+					libro.setTitulo(rs.getString("titulo"));
 					libro.setAutor(rs.getString("autor"));
 					libro.setEdicion(rs.getString("edicion"));
 					libro.setEditorial(rs.getString("editorial"));
 					libro.setFecha_ed(rs.getDate("fecha_ed"));
 					libro.setFecha_imp(rs.getDate("fecha_imp"));
 					libro.setLengua(rs.getString("lengua"));
-					libro.setTitulo(rs.getString("titulo"));
 					libro.add(LibrosAPILinkBuilder.buildURILibroId(uriInfo,
 	                        libro.getId(), "self"));
 					libros.add(libro);
@@ -194,10 +148,11 @@ public class LibroResource {
 		return libros;
 	}
 
+	
 	@GET
-	@Path("/{titulo}")
+	@Path("/{id}")
 	@Produces(MediaType.LIBROS_API_LIBRO)
-	public Libro getLibro(@PathParam("titulo") String titulo) {
+	public Libro getLibro(@PathParam("id") int id) {
 
 		Libro libro = new Libro();
 		Connection conn = null;
@@ -210,18 +165,18 @@ public class LibroResource {
 		}
 		try {
 			stmt = conn.createStatement();
-			sql = "SELECT * FROM libros WHERE titulo= '" + titulo + "'";
+			sql = "SELECT * FROM libros WHERE id= '" + id + "'";
 
 			ResultSet rs = stmt.executeQuery(sql);
 			if (rs.next()) {
 				libro.setId(rs.getInt("id"));
+				libro.setTitulo(rs.getString("titulo"));
 				libro.setAutor(rs.getString("autor"));
 				libro.setEdicion(rs.getString("edicion"));
 				libro.setEditorial(rs.getString("editorial"));
 				libro.setFecha_ed(rs.getDate("fecha_ed"));
 				libro.setFecha_imp(rs.getDate("fecha_imp"));
 				libro.setLengua(rs.getString("lengua"));
-				libro.setTitulo(rs.getString("titulo"));
 				libro.add(LibrosAPILinkBuilder.buildURILibroId(uriInfo,
                         libro.getId(), "self"));
 			}
@@ -308,13 +263,13 @@ public class LibroResource {
 				ResultSet rs = stmt.executeQuery(sql);
 				if (rs.next()) {
 					libro.setId(rs.getInt("id"));
+					libro.setTitulo(rs.getString("titulo"));
 					libro.setAutor(rs.getString("autor"));
 					libro.setEdicion(rs.getString("edicion"));
 					libro.setEditorial(rs.getString("editorial"));
 					libro.setFecha_ed(rs.getDate("fecha_ed"));
 					libro.setFecha_imp(rs.getDate("fecha_imp"));
-					libro.setLengua(rs.getString("lengua"));
-					libro.setTitulo(rs.getString("titulo"));
+					libro.setLengua(rs.getString("lengua"));					
 					libro.add(LibrosAPILinkBuilder.buildURILibroId(uriInfo,
 	                        libro.getId(), "self"));
 				}
@@ -367,13 +322,13 @@ public class LibroResource {
 				ResultSet rs = stmt.executeQuery(sql);
 				if (rs.next()) {
 					libro.setId(rs.getInt("id"));
+					libro.setTitulo(rs.getString("titulo"));
 					libro.setAutor(rs.getString("autor"));
 					libro.setEdicion(rs.getString("edicion"));
 					libro.setEditorial(rs.getString("editorial"));
 					libro.setFecha_ed(rs.getDate("fecha_ed"));
 					libro.setFecha_imp(rs.getDate("fecha_imp"));
-					libro.setLengua(rs.getString("lengua"));
-					libro.setTitulo(rs.getString("titulo"));
+					libro.setLengua(rs.getString("lengua"));			
 					libro.add(LibrosAPILinkBuilder.buildURILibroId(uriInfo,
 	                        libro.getId(), "self"));
 				}
