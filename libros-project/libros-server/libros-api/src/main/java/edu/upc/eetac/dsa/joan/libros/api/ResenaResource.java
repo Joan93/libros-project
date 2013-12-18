@@ -121,6 +121,9 @@ public class ResenaResource {
 		return resena;
 	}
 
+	
+	
+	/*
 	@DELETE
 	@Path("/{idres}")
 	public void deleteResena(@PathParam("idres") String idres) {
@@ -147,5 +150,54 @@ public class ResenaResource {
 				e.printStackTrace();
 			}
 		}
+	} */ 
+	
+	@DELETE
+	@Path("/{idres}")
+	public void deleteResena(@PathParam("idres") String idres) {
+		String username;
+		Connection conn = null;
+		Statement stmt = null;
+		String sql;
+		ResultSet rs;
+		try {
+			conn = ds.getConnection();
+		} catch (SQLException e) {
+			throw new ServiceUnavailableException(e.getMessage());
+		}
+		try {
+			stmt = conn.createStatement();
+			sql = "SELECT * FROM resenas WHERE idres='" + idres + "'";
+			rs = stmt.executeQuery(sql);
+			rs.next();
+			username = rs.getString("username");
+
+		} catch (SQLException e) {
+			throw new ResenaNotFoundException();
+		}
+		if (security.getUserPrincipal().getName().equals(username)) {
+
+			try {
+				stmt = conn.createStatement();
+				sql = "DELETE FROM resenas WHERE idres='" + idres
+						+ "'and username='" + username + "'";
+				stmt.executeUpdate(sql);
+			} catch (SQLException e) {
+				throw new InternalServerException(e.getMessage());
+			} finally {
+				try {
+					stmt.close();
+					conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		else {
+			throw new NotAllowedException();
+		}
 	}
+	
+	
+	
 }
