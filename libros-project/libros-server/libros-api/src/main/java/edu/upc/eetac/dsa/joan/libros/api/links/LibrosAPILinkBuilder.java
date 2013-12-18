@@ -2,6 +2,7 @@ package edu.upc.eetac.dsa.joan.libros.api.links;
 
 import java.net.URI;
 
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import edu.upc.eetac.dsa.joan.libros.api.LibroResource;
@@ -152,9 +153,9 @@ public class LibrosAPILinkBuilder {
 		return link;
 	} 
 	
-	
+
 /*
-	public final static Link buildURIResenas(UriInfo uriInfo, String rel,
+	public final static Link buildURIResena(UriInfo uriInfo, String rel,
 			String idlibro) {
 		URI uriReview = uriInfo.getBaseUriBuilder().path(LibroResource.class)
 				.path(ResenaResource.class, "getResena").build(idlibro);
@@ -165,17 +166,18 @@ public class LibrosAPILinkBuilder {
 		link.setType(MediaType.LIBROS_API_RESENA_COLLECTION);
 		return link;
 	}
+	*/
 
 	public final static Link buildURIResenaId(UriInfo uriInfo, String rel,
-			int resenaid, String idlibro) {
-		URI uriReview = uriInfo.getBaseUriBuilder().path(LibroResource.class)
-				.path(ResenaResource.class, "getResena").build(idlibro, resenaid);
+			int idres, String idlibro) {
+		
+		URI resenaURI = uriInfo.getBaseUriBuilder().path(LibroResource.class).path("/" + idlibro).path("/resenas").path("/+idresena").build();
 		Link link = new Link();
-		link.setUri(uriReview.toString());
+		link.setUri(resenaURI.toString());
 		link.setRel(rel);
-		link.setTitle("Resena " + resenaid);
+		link.setTitle("Idresena " + idres);
 		link.setType(MediaType.LIBROS_API_RESENA);
 		return link;
 	}
-*/ 
+
 }
