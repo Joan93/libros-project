@@ -20,6 +20,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
+import edu.upc.eetac.dsa.joan.libros.api.links.LibrosAPILinkBuilder;
 import edu.upc.eetac.dsa.joan.libros.api.model.Libro;
 import edu.upc.eetac.dsa.joan.libros.api.model.LibroCollection;
 
@@ -34,7 +35,30 @@ public class LibroResource {
 
 	@GET
 	@Produces(MediaType.LIBROS_API_LIBRO_COLLECTION)
-	public LibroCollection getLibros() {
+	public LibroCollection getLibros(@QueryParam("titulo") String titulo,
+			@QueryParam("autor") String autor,
+			@QueryParam("offset") String offset,
+			@QueryParam("length") String length) {
+		if ((offset == null) || (length == null))
+			throw new BadRequestException(
+					"offset and length are mandatory parameters");
+		int ioffset, ilength, icount = 0;
+		try {
+			ioffset = Integer.parseInt(offset);
+			if (ioffset < 0)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new BadRequestException(
+					"offset must be an integer greater or equal than 0.");
+		}
+		try {
+			ilength = Integer.parseInt(length);
+			if (ilength < 1)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new BadRequestException(
+					"length must be an integer greater or equal than 1.");
+		}
 		LibroCollection libros = new LibroCollection();
 		Connection conn = null;
 		Statement stmt = null;
@@ -58,6 +82,7 @@ public class LibroResource {
 				libro.setFecha_imp(rs.getDate("fecha_imp"));
 				libro.setLengua(rs.getString("lengua"));
 				libro.setTitulo(rs.getString("titulo"));
+
 				libros.add(libro);
 			}
 		} catch (SQLException e) {
