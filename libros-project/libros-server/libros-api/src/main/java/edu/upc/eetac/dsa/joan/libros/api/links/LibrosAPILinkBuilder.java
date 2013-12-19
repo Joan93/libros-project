@@ -141,6 +141,20 @@ public class LibrosAPILinkBuilder {
 		return link;
 	}
 
+	public static final Link buildURIUsers(UriInfo uriInfo, String rel) {
+		URI uriUsers;
+
+		uriUsers = uriInfo.getBaseUriBuilder().path(UserResource.class).build();
+
+		Link self = new Link();
+		self.setUri(uriUsers.toString());
+		self.setRel(rel);
+		self.setTitle("Users collection");
+		self.setType(MediaType.LIBROS_API_USER_COLLECTION);
+
+		return self;
+	}
+
 	public final static Link buildURIUserName(UriInfo uriInfo, String username,
 			String rel) {
 		URI userURI = uriInfo.getBaseUriBuilder().path(UserResource.class)
@@ -151,12 +165,42 @@ public class LibrosAPILinkBuilder {
 		link.setTitle("User " + username);
 		link.setType(MediaType.LIBROS_API_USER);
 		return link;
-	} 
+	}
+
+	public static final Link buildURIResenas(UriInfo uriInfo, String rel) {
+		URI uriResenas;
+
+		uriResenas = uriInfo.getBaseUriBuilder().path(ResenaResource.class)
+				.build();
+
+		Link self = new Link();
+		self.setUri(uriResenas.toString());
+		self.setRel(rel);
+		self.setTitle("Resenas collection");
+		self.setType(MediaType.LIBROS_API_RESENA_COLLECTION);
+
+		return self;
+	}
+
+	public final static Link buildURIResenas(UriInfo uriInfo, String idlibro,
+			String rel) {
+		URI resenaURI = uriInfo.getBaseUriBuilder().path(LibroResource.class)
+				.path("/" + idlibro).path("/resenas").build();
+
+		Link link = new Link();
+		link.setUri(resenaURI.toString());
+		link.setRel("self");
+		link.setTitle("Idresena " + idlibro);
+		link.setType(MediaType.LIBROS_API_RESENA);
+
+		return link;
+	}
 
 	public final static Link buildURIResenaId(UriInfo uriInfo, String rel,
 			int idres, String idlibro) {
-		
-		URI resenaURI = uriInfo.getBaseUriBuilder().path(LibroResource.class).path("/" + idlibro).path("/resenas").path("/"+idres).build();
+
+		URI resenaURI = uriInfo.getBaseUriBuilder().path(LibroResource.class)
+				.path("/" + idlibro).path("/resenas").path("/" + idres).build();
 		Link link = new Link();
 		link.setUri(resenaURI.toString());
 		link.setRel(rel);
